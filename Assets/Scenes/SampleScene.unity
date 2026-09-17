@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 6438be04f56d6234fa09ed56aaea1c11, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -151,7 +151,7 @@ Transform:
   m_LocalScale: {x: 0.1564, y: 0.7052, z: 0.77141654}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1675264800}
+  m_Father: {fileID: 862486080}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &310467544
 BoxCollider:
@@ -169,7 +169,7 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -317,13 +318,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 3, z: -9.32294}
+  m_LocalRotation: {x: 0.10168721, y: -0, z: -0, w: 0.9948164}
+  m_LocalPosition: {x: 0, y: 4.37, z: -5.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 849541640}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 1516863083}
+  m_LocalEulerAnglesHint: {x: 11.673, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,6 +369,24 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 861fd77c92d48ff4da000c974eed227d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraTurbulence
+  airplane: {fileID: 849541639}
+  positionStrength: 0.025
+  rotationStrength: 0.6
+  frequency: 2.5
+  smoothness: 8
+  fullTurbulenceSpeed: 20
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,7 +546,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1675264800}
+  m_Father: {fileID: 862486080}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &472749759
 BoxCollider:
@@ -545,7 +564,7 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
@@ -667,7 +686,7 @@ GameObject:
   - component: {fileID: 849541640}
   - component: {fileID: 849541639}
   m_Layer: 0
-  m_Name: Airplane
+  m_Name: AirplaneRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -685,12 +704,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2681e40fb2a7fb3c7afd2a695f8ce3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::flugzeugbesturing
-  planeModel: {fileID: 1675264800}
-  flySpeed: 10
-  yawSpeed: 60
-  pitchSpeed: 40
+  planeModel: {fileID: 862486080}
+  verticalAxis: Vertical
+  joystickDeadzone: 0.1
+  invertVertical: 0
+  startSpeed: 0
+  cruiseSpeed: 20
+  acceleration: 4
+  takeoffSpeed: 12
+  yawSpeed: 45
+  buttonSmoothness: 4
+  pitchSpeed: 35
+  maximumPitch: 35
+  pitchLevelSpeed: 20
   maxRoll: 30
   rollSmoothness: 5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  groundCheckDistance: 1.5
 --- !u!4 &849541640
 Transform:
   m_ObjectHideFlags: 0
@@ -706,7 +738,43 @@ Transform:
   m_Children:
   - {fileID: 330585546}
   - {fileID: 1675264800}
+  - {fileID: 862486080}
+  - {fileID: 1516863083}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &862486079
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 862486080}
+  m_Layer: 0
+  m_Name: PlaneModel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &862486080
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862486079}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8, y: -1.51, z: -4.5231}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2013246820}
+  - {fileID: 310467543}
+  - {fileID: 472749758}
+  m_Father: {fileID: 849541640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &972701172
 GameObject:
@@ -720,7 +788,7 @@ GameObject:
   - component: {fileID: 972701175}
   - component: {fileID: 972701174}
   - component: {fileID: 972701173}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -743,7 +811,7 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
@@ -815,12 +883,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.5, y: -9.1, z: 0.5}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 80.03999, y: 20, z: 104.54001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1675264799
+--- !u!1 &1516863082
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -828,21 +896,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1675264800}
+  - component: {fileID: 1516863083}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1675264800
+--- !u!4 &1516863083
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1675264799}
+  m_GameObject: {fileID: 1516863082}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -852,6 +920,7 @@ Transform:
   - {fileID: 472749758}
   - {fileID: 310467543}
   - {fileID: 2013246820}
+  - {fileID: 330585546}
   m_Father: {fileID: 849541640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2013246819
@@ -886,7 +955,7 @@ Transform:
   m_LocalScale: {x: 2.4337, y: 0.1676, z: 1.0894465}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1675264800}
+  m_Father: {fileID: 862486080}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2013246821
 BoxCollider:
@@ -904,7 +973,7 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
