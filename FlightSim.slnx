@@ -5,4 +5,5 @@
   <Project Path="Meryel.CodeAssist.Editor.csproj" />
 >>>>>>> Stashed changes
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>
