@@ -1,4 +1,8 @@
 ﻿<Solution>
+<<<<<<< Updated upstream
   <Project Path="Assembly-CSharp-Editor.csproj" />
+=======
+  <Project Path="Meryel.CodeAssist.Editor.csproj" />
+>>>>>>> Stashed changes
   <Project Path="Assembly-CSharp.csproj" />
 </Solution>
