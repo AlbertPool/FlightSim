@@ -657,28 +657,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeSpriteEvent
   m_LocalizedAssetReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:13817be2485468d4184e03f8644fdb27
-    m_TableEntryReference:
-      m_KeyId: 1028740079616
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-  m_UpdateAsset:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 952376434}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
-        m_MethodName: set_sprite
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+m_Dirty: 1
+m_UpdateTrigger: 0
+<property>k__BackingField: 
+m_TableReference:
+  m_TableCollectionName: GUID:13817be2485468d4184e03f8644fdb27
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_TableEntryReference:
+  m_KeyId: 1028740079616
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_FallbackState: 0
+m_WaitForCompletion: 0
+m_LocaleOverride: {fileID: 0}
+m_CurrentTable:
+  m_TableCollectionName: GUID:13817be2485468d4184e03f8644fdb27
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_CurrentTableEntry:
+  m_KeyId: 1028740079616
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_ActivatedCount: 0
+m_CurrentValue: {fileID: 0}
+m_UpdateAsset:
+  m_PersistentCalls:
+    m_Calls:
+    - m_Target: {fileID: 952376434}
+      m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+      m_MethodName: set_sprite
+      m_Mode: 0
+      m_Arguments:
+        m_ObjectArgument: {fileID: 0}
+        m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_IntArgument: 0
+        m_FloatArgument: 0
+        m_StringArgument: 
+        m_BoolArgument: 0
+      m_CallState: 2
+  m_CallsDirty: 1
 --- !u!114 &952376433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,30 +956,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
   m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:6eaff3756ccc06447be0aae7051e0e31
-    m_TableEntryReference:
-      m_KeyId: 18293813248
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
+m_Dirty: 1
+m_UpdateTrigger: 0
+<property>k__BackingField: 
+m_TableReference:
+  m_TableCollectionName: GUID:6eaff3756ccc06447be0aae7051e0e31
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_TableEntryReference:
+  m_KeyId: 18293813248
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_FallbackState: 0
+m_WaitForCompletion: 0
+m_LocaleOverride: {fileID: 0}
+m_CurrentTable:
+  m_TableCollectionName: GUID:6eaff3756ccc06447be0aae7051e0e31
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_CurrentTableEntry:
+  m_KeyId: 18293813248
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_ActivatedCount: 0
+m_LocalVariables: []
+m_CurrentStringChangedValue: 
+m_WaitingForVariablesEndUpdate: 0
   m_FormatArguments: []
   m_UpdateString:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1007795357}
-        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+- m_Target: {fileID: 1007795357}
+  m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+  m_MethodName: set_text
+  m_Mode: 0
+  m_Arguments:
+    m_ObjectArgument: {fileID: 0}
+    m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+    m_IntArgument: 0
+    m_FloatArgument: 0
+    m_StringArgument: 
+    m_BoolArgument: 0
+  m_CallState: 2
+m_CallsDirty: 1
   references:
     version: 2
     RefIds: []
@@ -1123,30 +1164,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
   m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:4dc173477835a3a4b94f248bef03ec74
-    m_TableEntryReference:
-      m_KeyId: 310875877376
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
+m_Dirty: 1
+m_UpdateTrigger: 0
+<property>k__BackingField: 
+m_TableReference:
+  m_TableCollectionName: GUID:4dc173477835a3a4b94f248bef03ec74
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_TableEntryReference:
+  m_KeyId: 310875877376
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_FallbackState: 0
+m_WaitForCompletion: 0
+m_LocaleOverride: {fileID: 0}
+m_CurrentTable:
+  m_TableCollectionName: GUID:4dc173477835a3a4b94f248bef03ec74
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 1
+m_CurrentTableEntry:
+  m_KeyId: 310875877376
+  m_Key: 
+  m_Valid: 0
+  <ReferenceType>k__BackingField: 2
+m_ActivatedCount: 0
+m_LocalVariables: []
+m_CurrentStringChangedValue: Start
+m_WaitingForVariablesEndUpdate: 0
   m_FormatArguments: []
   m_UpdateString:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1627799185}
-        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+- m_Target: {fileID: 1627799185}
+  m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+  m_MethodName: set_text
+  m_Mode: 0
+  m_Arguments:
+    m_ObjectArgument: {fileID: 0}
+    m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+    m_IntArgument: 0
+    m_FloatArgument: 0
+    m_StringArgument: 
+    m_BoolArgument: 0
+  m_CallState: 2
+m_CallsDirty: 1
   references:
     version: 2
     RefIds: []
@@ -2560,6 +2622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99f53951d6bed4c419efa712eaa32a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LanguageChanger
+active: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
