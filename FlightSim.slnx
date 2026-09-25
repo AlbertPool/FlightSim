@@ -1,5 +1,9 @@
 ﻿<Solution>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+  <Project Path="Meryel.CodeAssist.Editor.csproj" />
+>>>>>>> Sem
   <Project Path="Assembly-CSharp-Editor.csproj" />
 =======
   <Project Path="Meryel.CodeAssist.Editor.csproj" />
