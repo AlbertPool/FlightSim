@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-German (de)
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-German (de)
+  m_GUID: e363a4f5a472d9e40869ad3711500403
+  m_SerializeEntries:
+  - m_GUID: c72762eb52679254a8e890b8bdf370e1
+    m_Address: Duitse_vlag
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-de
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 4a2269825eddaa64e8c184d6b7928ce6, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c5dea43fc948bbb40ab963605b186ce6, type: 2}
+    - {fileID: 11400000, guid: d9fe341a6cb776f4ba88f370570d0f17, type: 2}
+    - {fileID: 11400000, guid: f01a55ddff5507f42a60476e1d0a2b99, type: 2}

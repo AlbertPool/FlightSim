@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Asset-Tables-Dutch (nl)
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Asset-Tables-Dutch (nl)
+  m_GUID: d230a6aeb9c4b744dbb3a939848accad
+  m_SerializeEntries:
+  - m_GUID: 509a118dcf53cc24bab359062b5b007e
+    m_Address: Sprite_table_nl
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-nl
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 4a2269825eddaa64e8c184d6b7928ce6, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0d6a81c4921942843b5fe5d67f76ea1f, type: 2}
+    - {fileID: 11400000, guid: b0bacb3960853384d87743f948f125a2, type: 2}
+    - {fileID: 11400000, guid: 85344ebfdba87bb478f055b957aa3579, type: 2}
