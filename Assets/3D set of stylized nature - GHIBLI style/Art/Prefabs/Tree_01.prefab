@@ -214,7 +214,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 1b41e03f811c2474395f90e1f6751193, type: 2}
+  - {fileID: 2100000, guid: d0774e65a2d09a745bcb77dd0463f2de, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -246,20 +247,26 @@ LODGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8683957029240424534}
   serializedVersion: 3
-  m_LocalReferencePoint: {x: -0.36655337, y: 3.9675665, z: 0.13516092}
-  m_Size: 8.106382
+  m_LocalReferencePoint: {x: -0.36655337, y: 3.9805684, z: 0.13516092}
+  m_Size: 8.080379
   m_FadeMode: 0
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
   - screenRelativeHeight: 0.6
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: -8288791653060096616}
+    - renderer: {fileID: 5151657194295658522}
   - screenRelativeHeight: 0.3
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: -8288791653060096616}
+    - renderer: {fileID: 5151657194295658522}
   - screenRelativeHeight: 0.1
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: -8288791653060096616}
+    - renderer: {fileID: 5151657194295658522}
   m_Enabled: 1
   m_GlobalIlluminationLOD: 0
