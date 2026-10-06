@@ -207,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.10168721, y: -0, z: -0, w: 0.9948164}
-  m_LocalPosition: {x: 8.715, y: 10.06, z: 1.611}
+  m_LocalPosition: {x: -0.006, y: 0.38, z: 0.24}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -564,7 +564,7 @@ Transform:
   m_GameObject: {fileID: 862486079}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.8, y: 0.5, z: -12.100006}
+  m_LocalPosition: {x: -29.2, y: 50.36, z: 6.6}
   m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -587,6 +587,8 @@ MonoBehaviour:
   forwardSpeed: 40
   verticalSpeed: 10
   maxVerticalSpeed: 20
+  bankedClimbSideSpeed: 20
+  bankedClimbUpwardBonus: -30
   turnSpeed: 30
   maxBankAngle: 30
   bankSpeed: 15
@@ -713,15 +715,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.719229
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.93
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.5299072
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
       propertyPath: m_LocalRotation.w
