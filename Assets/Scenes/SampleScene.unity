@@ -1120,6 +1120,7 @@ MonoBehaviour:
   maxVerticalSpeed: 20
   bankedClimbSideSpeed: 20
   bankedClimbUpwardBonus: -30
+  maxBankedClimbUpwardSpeed: 2
   turnSpeed: 30
   maxBankAngle: 30
   bankSpeed: 15
@@ -1130,6 +1131,13 @@ MonoBehaviour:
   frontWing: {fileID: 1664328926}
   frontWingMaxDeflection: 8
   frontWingResponseSpeed: 45
+  espReader: {fileID: 909945733}
+  leverMin: 4
+  leverNeutral: 6.5
+  leverMax: 8.5
+  leverDeadzone: 0.4
+  maxLeverInput: 0.35
+  invertLever: 0
 --- !u!65 &862486082
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1178,6 +1186,51 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &909945731
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 909945732}
+  - component: {fileID: 909945733}
+  m_Layer: 0
+  m_Name: ESP32Reader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &909945732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909945731}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 103.4035, y: 30.91222, z: -290.1763}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &909945733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909945731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b95d6e22af1dd459567a6e401a0f7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ESP32reader
+  usbValue: 0
 --- !u!1 &951845060
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,3 +2130,4 @@ SceneRoots:
   - {fileID: 293761803}
   - {fileID: 700546056}
   - {fileID: 325907917}
+  - {fileID: 909945732}

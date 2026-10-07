@@ -21,6 +21,18 @@ public class PlaneScript : MonoBehaviour
     [SerializeField] private float frontWingMaxDeflection = 8f;
     [SerializeField] private float frontWingResponseSpeed = 45f;
 
+    [Header("ESP32 Lever")]
+    [SerializeField] private ESP32reader espReader;
+    [SerializeField] private float leverMin = 4f;
+    [SerializeField] private float leverNeutral = 6.5f;
+    [SerializeField] private float leverMax = 8.5f;
+    [SerializeField] private float leverDeadzone = 0.4f;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float maxLeverInput = 0.35f;
+
+    [SerializeField] private bool invertLever = false;
+
     private float currentBankAngle;
     private float currentPitchAngle;
     private float currentVerticalSpeed;
@@ -53,10 +65,70 @@ public class PlaneScript : MonoBehaviour
 
     void Update()
     {
-        float verticalInput = Input.GetAxis("Vertical");
-        float turnInput = Input.GetAxisRaw("Horizontal");
+        float espInput = 0f;
+
+        if (espReader != null)
+        {
+            float value = espReader.usbValue;
+
+            // Deadzone rond 6.5
+            if (Mathf.Abs(value - leverNeutral) <= leverDeadzone)
+            {
+                espInput = 0f;
+            }
+            else if (value < leverNeutral)
+            {
+                float amount = Mathf.InverseLerp(
+                    leverNeutral - leverDeadzone,
+                    leverMin,
+                    value
+                );
+
+                espInput = -amount * maxLeverInput;
+            }
+            else
+            {
+                float amount = Mathf.InverseLerp(
+                    leverNeutral + leverDeadzone,
+                    leverMax,
+                    value
+                );
+
+                espInput = amount * maxLeverInput;
+            }
+
+            if (invertLever)
+            {
+                espInput = -espInput;
+            }
+        }
+
+        // Oude W/S besturing
+        float keyboardPitch =
+            (Input.GetKey(KeyCode.S) ? 1f : 0f) -
+            (Input.GetKey(KeyCode.W) ? 1f : 0f);
+
+        float verticalInput;
+
+        // Als W of S wordt ingedrukt: keyboard heeft voorrang.
+        // Anders gebruiken we de ESP-hendel.
+        if (Mathf.Abs(keyboardPitch) > 0.01f)
+        {
+            verticalInput = keyboardPitch;
+        }
+        else
+        {
+            verticalInput = espInput;
+        }
+
+        // A/D blijft hetzelfde
+        float turnInput =
+            (Input.GetKey(KeyCode.D) ? 1f : 0f) -
+            (Input.GetKey(KeyCode.A) ? 1f : 0f);
+
         float targetPitchAngle = -verticalInput * maxPitchAngle;
         float targetBankAngle = -turnInput * maxBankAngle;
+
         bool pitchingToOppositeSide =
             !Mathf.Approximately(currentPitchAngle, 0f) &&
             !Mathf.Approximately(targetPitchAngle, 0f) &&
@@ -81,6 +153,7 @@ public class PlaneScript : MonoBehaviour
         float previousPitchAngle = currentPitchAngle;
         float currentBankSpeed = bankSpeed;
         float currentPitchSpeed = pitchSpeed;
+
         if (turningToOppositeSide)
         {
             currentBankSpeed *= oppositeTurnLevelingMultiplier;
@@ -91,60 +164,133 @@ public class PlaneScript : MonoBehaviour
             currentPitchSpeed *= oppositePitchLevelingMultiplier;
         }
 
-        currentBankAngle = Mathf.MoveTowards(currentBankAngle, targetBankAngle, currentBankSpeed * Time.deltaTime);
-        currentPitchAngle = Mathf.MoveTowards(currentPitchAngle, targetPitchAngle, currentPitchSpeed * Time.deltaTime);
+        currentBankAngle = Mathf.MoveTowards(
+            currentBankAngle,
+            targetBankAngle,
+            currentBankSpeed * Time.deltaTime
+        );
+
+        currentPitchAngle = Mathf.MoveTowards(
+            currentPitchAngle,
+            targetPitchAngle,
+            currentPitchSpeed * Time.deltaTime
+        );
+
         float targetFrontWingAngle = maxPitchAngle > 0f
             ? Mathf.Clamp(currentPitchAngle / maxPitchAngle, -1f, 1f) * frontWingMaxDeflection
             : 0f;
+
         currentFrontWingAngle = Mathf.MoveTowards(
             currentFrontWingAngle,
             targetFrontWingAngle,
-            frontWingResponseSpeed * Time.deltaTime);
+            frontWingResponseSpeed * Time.deltaTime
+        );
+
         float turnAmount = maxBankAngle > 0f
             ? Mathf.Clamp(-currentBankAngle / maxBankAngle, -1f, 1f)
             : 0f;
+
         float bankAmount = maxBankAngle > 0f
             ? Mathf.Clamp01(Mathf.Abs(currentBankAngle) / maxBankAngle)
             : 0f;
+
         float bankedClimbInput = Mathf.Max(0f, verticalInput) * bankAmount;
+
         Vector3 forwardMovement = transform.forward * forwardSpeed;
         float forwardVerticalSpeed = forwardMovement.y;
-        float bankedClimbVerticalBonus = bankedClimbInput * bankedClimbUpwardBonus;
-        float maxUnbankedClimbSpeed = verticalInput * maxVerticalSpeed + Mathf.Max(0f, forwardVerticalSpeed);
-        float maxClimbSpeed = Mathf.Lerp(maxUnbankedClimbSpeed, maxBankedClimbUpwardSpeed, bankAmount);
-        float targetVerticalSpeed = verticalInput * maxVerticalSpeed;
+
+        float bankedClimbVerticalBonus =
+            bankedClimbInput * bankedClimbUpwardBonus;
+
+        float maxUnbankedClimbSpeed =
+            verticalInput * maxVerticalSpeed +
+            Mathf.Max(0f, forwardVerticalSpeed);
+
+        float maxClimbSpeed = Mathf.Lerp(
+            maxUnbankedClimbSpeed,
+            maxBankedClimbUpwardSpeed,
+            bankAmount
+        );
+
+        float targetVerticalSpeed =
+            verticalInput * maxVerticalSpeed;
 
         if (bankedClimbInput > 0f)
         {
             targetVerticalSpeed = Mathf.Min(
                 targetVerticalSpeed,
-                maxClimbSpeed - forwardVerticalSpeed - bankedClimbVerticalBonus);
+                maxClimbSpeed -
+                forwardVerticalSpeed -
+                bankedClimbVerticalBonus
+            );
         }
 
         currentVerticalSpeed = Mathf.MoveTowards(
             currentVerticalSpeed,
             targetVerticalSpeed,
-            verticalSpeed * Time.deltaTime);
-        float totalVerticalSpeed = forwardVerticalSpeed + currentVerticalSpeed + bankedClimbVerticalBonus;
+            verticalSpeed * Time.deltaTime
+        );
+
+        float totalVerticalSpeed =
+            forwardVerticalSpeed +
+            currentVerticalSpeed +
+            bankedClimbVerticalBonus;
+
         if (bankedClimbInput > 0f)
         {
-            totalVerticalSpeed = Mathf.Min(totalVerticalSpeed, maxClimbSpeed);
+            totalVerticalSpeed =
+                Mathf.Min(totalVerticalSpeed, maxClimbSpeed);
         }
 
         forwardMovement.y = 0f;
-        Vector3 bankDirection = Vector3.ProjectOnPlane(transform.right, Vector3.up).normalized
+
+        Vector3 bankDirection =
+            Vector3.ProjectOnPlane(
+                transform.right,
+                Vector3.up
+            ).normalized
             * -Mathf.Sign(currentBankAngle);
 
-        transform.position += forwardMovement * Time.deltaTime;
-        transform.position += Vector3.up * totalVerticalSpeed * Time.deltaTime;
-        transform.position += bankDirection * (bankedClimbInput * bankedClimbSideSpeed * Time.deltaTime);
-        transform.Rotate(Vector3.up, turnAmount * turnSpeed * Time.deltaTime, Space.World);
-        transform.Rotate(Vector3.forward, currentBankAngle - previousBankAngle, Space.Self);
-        transform.Rotate(Vector3.right, currentPitchAngle - previousPitchAngle, Space.Self);
+        transform.position +=
+            forwardMovement * Time.deltaTime;
+
+        transform.position +=
+            Vector3.up *
+            totalVerticalSpeed *
+            Time.deltaTime;
+
+        transform.position +=
+            bankDirection *
+            (bankedClimbInput *
+             bankedClimbSideSpeed *
+             Time.deltaTime);
+
+        transform.Rotate(
+            Vector3.up,
+            turnAmount * turnSpeed * Time.deltaTime,
+            Space.World
+        );
+
+        transform.Rotate(
+            Vector3.forward,
+            currentBankAngle - previousBankAngle,
+            Space.Self
+        );
+
+        transform.Rotate(
+            Vector3.right,
+            currentPitchAngle - previousPitchAngle,
+            Space.Self
+        );
 
         if (frontWing != null)
         {
-            frontWing.localRotation = frontWingRestRotation * Quaternion.AngleAxis(currentFrontWingAngle, Vector3.right);
+            frontWing.localRotation =
+                frontWingRestRotation *
+                Quaternion.AngleAxis(
+                    currentFrontWingAngle,
+                    Vector3.right
+                );
         }
     }
 }
