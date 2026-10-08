@@ -182,7 +182,7 @@ MonoBehaviour:
     m_Value: 999
   globalOrientation:
     m_OverrideState: 1
-    m_Value: 20
+    m_Value: 282
   shapeSpeedMultiplier:
     m_OverrideState: 0
     m_Value: 1
@@ -209,7 +209,7 @@ MonoBehaviour:
     m_Value: 0.1
   scatteringTint:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_Value: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
   powderEffectIntensity:
     m_OverrideState: 0
     m_Value: 0.25
@@ -217,7 +217,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0.5
   shadows:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   shadowResolution:
     m_OverrideState: 1
