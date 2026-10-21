@@ -3,13 +3,12 @@ using UnityEngine;
 public class PlaneScript : MonoBehaviour
 {
     [SerializeField] private float forwardSpeed = 40f;
+    [SerializeField] private float forwardAcceleration = 5f;
     [Tooltip("Acceleration while building vertical speed, in units per second squared.")]
     [SerializeField] private float verticalSpeed = 20f;
     [SerializeField] private float maxVerticalSpeed = 40f;
     [SerializeField] private float bankedClimbSideSpeed = 20f;
-    [SerializeField] private float bankedClimbUpwardBonus = -30f;
-    [SerializeField, Min(0f)] private float maxBankedClimbUpwardSpeed = 2f;
-    [SerializeField] private float turnSpeed = 30f;
+    [SerializeField] private float turnSpeed = 40f;
     [SerializeField] private float maxBankAngle = 30f;
     [SerializeField] private float bankSpeed = 15f;
     [SerializeField] private float oppositeTurnLevelingMultiplier = 1.5f;
@@ -23,9 +22,16 @@ public class PlaneScript : MonoBehaviour
 
     private float currentBankAngle;
     private float currentPitchAngle;
+    private float currentForwardSpeed;
     private float currentVerticalSpeed;
     private float currentFrontWingAngle;
+    private bool engineStarted;
     private Quaternion frontWingRestRotation;
+
+    void Start()
+    {
+        currentForwardSpeed = 0f;
+    }
 
     void Awake()
     {
@@ -53,6 +59,16 @@ public class PlaneScript : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            engineStarted = true;
+        }
+
+        currentForwardSpeed = Mathf.MoveTowards(
+            currentForwardSpeed,
+            engineStarted ? forwardSpeed : 0f,
+            forwardAcceleration * Time.deltaTime);
+
         float verticalInput = Input.GetAxis("Vertical");
         float turnInput = Input.GetAxisRaw("Horizontal");
         float targetPitchAngle = -verticalInput * maxPitchAngle;
@@ -93,6 +109,10 @@ public class PlaneScript : MonoBehaviour
 
         currentBankAngle = Mathf.MoveTowards(currentBankAngle, targetBankAngle, currentBankSpeed * Time.deltaTime);
         currentPitchAngle = Mathf.MoveTowards(currentPitchAngle, targetPitchAngle, currentPitchSpeed * Time.deltaTime);
+        currentVerticalSpeed = Mathf.MoveTowards(
+            currentVerticalSpeed,
+            verticalInput * maxVerticalSpeed,
+            verticalSpeed * Time.deltaTime);
         float targetFrontWingAngle = maxPitchAngle > 0f
             ? Mathf.Clamp(currentPitchAngle / maxPitchAngle, -1f, 1f) * frontWingMaxDeflection
             : 0f;
@@ -107,36 +127,11 @@ public class PlaneScript : MonoBehaviour
             ? Mathf.Clamp01(Mathf.Abs(currentBankAngle) / maxBankAngle)
             : 0f;
         float bankedClimbInput = Mathf.Max(0f, verticalInput) * bankAmount;
-        Vector3 forwardMovement = transform.forward * forwardSpeed;
-        float forwardVerticalSpeed = forwardMovement.y;
-        float bankedClimbVerticalBonus = bankedClimbInput * bankedClimbUpwardBonus;
-        float maxUnbankedClimbSpeed = verticalInput * maxVerticalSpeed + Mathf.Max(0f, forwardVerticalSpeed);
-        float maxClimbSpeed = Mathf.Lerp(maxUnbankedClimbSpeed, maxBankedClimbUpwardSpeed, bankAmount);
-        float targetVerticalSpeed = verticalInput * maxVerticalSpeed;
-
-        if (bankedClimbInput > 0f)
-        {
-            targetVerticalSpeed = Mathf.Min(
-                targetVerticalSpeed,
-                maxClimbSpeed - forwardVerticalSpeed - bankedClimbVerticalBonus);
-        }
-
-        currentVerticalSpeed = Mathf.MoveTowards(
-            currentVerticalSpeed,
-            targetVerticalSpeed,
-            verticalSpeed * Time.deltaTime);
-        float totalVerticalSpeed = forwardVerticalSpeed + currentVerticalSpeed + bankedClimbVerticalBonus;
-        if (bankedClimbInput > 0f)
-        {
-            totalVerticalSpeed = Mathf.Min(totalVerticalSpeed, maxClimbSpeed);
-        }
-
-        forwardMovement.y = 0f;
         Vector3 bankDirection = Vector3.ProjectOnPlane(transform.right, Vector3.up).normalized
             * -Mathf.Sign(currentBankAngle);
 
-        transform.position += forwardMovement * Time.deltaTime;
-        transform.position += Vector3.up * totalVerticalSpeed * Time.deltaTime;
+        transform.position += transform.forward * currentForwardSpeed * Time.deltaTime;
+        transform.position += Vector3.up * currentVerticalSpeed * Time.deltaTime;
         transform.position += bankDirection * (bankedClimbInput * bankedClimbSideSpeed * Time.deltaTime);
         transform.Rotate(Vector3.up, turnAmount * turnSpeed * Time.deltaTime, Space.World);
         transform.Rotate(Vector3.forward, currentBankAngle - previousBankAngle, Space.Self);

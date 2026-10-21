@@ -1119,8 +1119,7 @@ MonoBehaviour:
   verticalSpeed: 10
   maxVerticalSpeed: 20
   bankedClimbSideSpeed: 20
-  bankedClimbUpwardBonus: -30
-  turnSpeed: 30
+  turnSpeed: 40
   maxBankAngle: 30
   bankSpeed: 15
   oppositeTurnLevelingMultiplier: 1.5
