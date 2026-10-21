@@ -35,10 +35,10 @@ MonoBehaviour:
     m_Value: 1
   m_CloudPreset:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   densityMultiplier:
     m_OverrideState: 1
-    m_Value: 0.3
+    m_Value: 0.4
   densityCurve:
     m_OverrideState: 1
     m_Value:
@@ -54,7 +54,7 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.05
+        time: 0.15
         value: 1
         inSlope: 0
         outSlope: 0
@@ -63,17 +63,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.9
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
         time: 1
-        value: 0
+        value: 0.1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -85,13 +76,13 @@ MonoBehaviour:
       m_RotationOrder: 4
   shapeFactor:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.9
   shapeScale:
     m_OverrideState: 1
     m_Value: 5
   erosionFactor:
     m_OverrideState: 1
-    m_Value: 0.5
+    m_Value: 0.8
   erosionScale:
     m_OverrideState: 1
     m_Value: 107
@@ -145,6 +136,15 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
+        time: 0.25
+        value: 0.4
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
         time: 1
         value: 0
         inSlope: 0
@@ -167,10 +167,10 @@ MonoBehaviour:
     m_Value: 200
   bottomAltitude:
     m_OverrideState: 1
-    m_Value: 1500
+    m_Value: 1200
   altitudeRange:
     m_OverrideState: 1
-    m_Value: 2500
+    m_Value: 2000
   shapeOffset:
     m_OverrideState: 0
     m_Value: {x: 0, y: 0, z: 0}
