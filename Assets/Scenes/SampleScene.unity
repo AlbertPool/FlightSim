@@ -1116,6 +1116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaneScript
   forwardSpeed: 40
+  forwardAcceleration: 5
   verticalSpeed: 10
   maxVerticalSpeed: 20
   bankedClimbSideSpeed: 20
