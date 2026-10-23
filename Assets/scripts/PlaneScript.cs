@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlaneScript : MonoBehaviour
 {
     [SerializeField] private float forwardSpeed = 40f;
@@ -27,14 +28,20 @@ public class PlaneScript : MonoBehaviour
     private float currentFrontWingAngle;
     private bool engineStarted;
     private Quaternion frontWingRestRotation;
-
-    void Start()
-    {
-        currentForwardSpeed = 0f;
-    }
+    private Rigidbody rb;
+    private float currentYaw;
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
+        currentYaw = transform.eulerAngles.y;
+
+        // Physics settings so the plane collides with the ground instead of passing through it
+        rb.isKinematic = false;                                        // kinematic bodies ignore collisions
+        rb.useGravity = false;                                         // this script controls vertical movement
+        rb.interpolation = RigidbodyInterpolation.Interpolate;         // smooth movement on screen
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; // no tunneling at speed
+
         if (frontWing == null)
         {
             foreach (Transform child in GetComponentsInChildren<Transform>(true))
@@ -57,13 +64,24 @@ public class PlaneScript : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        currentForwardSpeed = 0f;
+    }
+
     void Update()
     {
+        // Key presses are read in Update so none are missed
         if (Input.GetKeyDown(KeyCode.T))
         {
             engineStarted = true;
         }
+    }
 
+    // Movement now happens in FixedUpdate via the Rigidbody, so collisions work.
+    // (Time.deltaTime inside FixedUpdate automatically equals the physics step.)
+    void FixedUpdate()
+    {
         currentForwardSpeed = Mathf.MoveTowards(
             currentForwardSpeed,
             engineStarted ? forwardSpeed : 0f,
@@ -93,8 +111,6 @@ public class PlaneScript : MonoBehaviour
             targetBankAngle = 0f;
         }
 
-        float previousBankAngle = currentBankAngle;
-        float previousPitchAngle = currentPitchAngle;
         float currentBankSpeed = bankSpeed;
         float currentPitchSpeed = pitchSpeed;
         if (turningToOppositeSide)
@@ -130,12 +146,25 @@ public class PlaneScript : MonoBehaviour
         Vector3 bankDirection = Vector3.ProjectOnPlane(transform.right, Vector3.up).normalized
             * -Mathf.Sign(currentBankAngle);
 
-        transform.position += transform.forward * currentForwardSpeed * Time.deltaTime;
-        transform.position += Vector3.up * currentVerticalSpeed * Time.deltaTime;
-        transform.position += bankDirection * (bankedClimbInput * bankedClimbSideSpeed * Time.deltaTime);
-        transform.Rotate(Vector3.up, turnAmount * turnSpeed * Time.deltaTime, Space.World);
-        transform.Rotate(Vector3.forward, currentBankAngle - previousBankAngle, Space.Self);
-        transform.Rotate(Vector3.right, currentPitchAngle - previousPitchAngle, Space.Self);
+        // Movement: set a velocity instead of changing transform.position directly,
+        // so the physics engine can stop the plane when it hits the ground
+        Vector3 velocity =
+            transform.forward * currentForwardSpeed +
+            Vector3.up * currentVerticalSpeed +
+            bankDirection * (bankedClimbInput * bankedClimbSideSpeed);
+        rb.linearVelocity = velocity;
+
+        // Rotation: built from scratch every step from yaw, bank and pitch.
+        // That way a collision can never leave the plane permanently tilted.
+        currentYaw += turnAmount * turnSpeed * Time.deltaTime;
+        Quaternion rotation =
+            Quaternion.AngleAxis(currentYaw, Vector3.up) *
+            Quaternion.AngleAxis(currentBankAngle, Vector3.forward) *
+            Quaternion.AngleAxis(currentPitchAngle, Vector3.right);
+        rb.MoveRotation(rotation);
+
+        // Prevent the plane from spinning/tumbling after a collision
+        rb.angularVelocity = Vector3.zero;
 
         if (frontWing != null)
         {
