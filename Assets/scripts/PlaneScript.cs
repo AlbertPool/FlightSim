@@ -87,8 +87,8 @@ public class PlaneScript : MonoBehaviour
             engineStarted ? forwardSpeed : 0f,
             forwardAcceleration * Time.deltaTime);
 
-        float verticalInput = Input.GetAxis("Vertical");
-        float turnInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = engineStarted ? Input.GetAxis("Vertical") : 0f;
+        float turnInput = engineStarted ? Input.GetAxisRaw("Horizontal") : 0f;
         float targetPitchAngle = -verticalInput * maxPitchAngle;
         float targetBankAngle = -turnInput * maxBankAngle;
         bool pitchingToOppositeSide =
