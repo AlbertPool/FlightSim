@@ -563,17 +563,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3baa8bc259917c42849ad05b5d9958a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaneScript
-  forwardSpeed: 10
+  forwardSpeed: 20
   forwardAcceleration: 5
   verticalSpeed: 5
   maxVerticalSpeed: 10
-  bankedClimbSideSpeed: 20
-  turnSpeed: 40
+  bankedClimbSideSpeed: 0
+  turnSpeed: 20
   maxBankAngle: 30
   bankSpeed: 15
   oppositeTurnLevelingMultiplier: 1.5
   maxPitchAngle: 20
-  pitchSpeed: 20
+  pitchSpeed: 10
   oppositePitchLevelingMultiplier: 1.5
   frontWing: {fileID: 1019983437}
   frontWingMaxDeflection: 8
@@ -596,36 +596,14 @@ MonoBehaviour:
     m_Bits: 4294967295
   maxCheckDistance: 2000
   label: Hoogte
---- !u!146 &425932651
-WheelCollider:
+--- !u!136 &425932651
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 425932645}
-  serializedVersion: 2
-  m_Center: {x: 0, y: 0, z: 0}
-  m_Radius: 0.5
-  m_SuspensionSpring:
-    spring: 35000
-    damper: 4500
-    targetPosition: 0.5
-  m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
-  m_Mass: 20
-  m_WheelDampingRate: 0.25
-  m_ForwardFriction:
-    m_ExtremumSlip: 0.4
-    m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 1
-  m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
-    m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -633,8 +611,14 @@ WheelCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_Enabled: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.3294098
+  m_Height: 8.019336
+  m_Direction: 2
+  m_Center: {x: -0.0082794195, y: 0.86959726, z: -1.0867676}
 --- !u!1 &717102646
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,13 +806,43 @@ PrefabInstance:
     - {fileID: -6577237425059042219, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
     - {fileID: -2914413575082383075, guid: 922ee204f032ab348b74a6ba3d520efb, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a09559c538d0d3447b643616b01fa90d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1157460093}
   m_SourcePrefab: {fileID: 100100000, guid: a09559c538d0d3447b643616b01fa90d, type: 3}
 --- !u!4 &1019983437 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a09559c538d0d3447b643616b01fa90d, type: 3}
   m_PrefabInstance: {fileID: 1019983436}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1157460092 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a09559c538d0d3447b643616b01fa90d, type: 3}
+  m_PrefabInstance: {fileID: 1019983436}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1157460093
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1157460092}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &1190904158
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,7 +1083,7 @@ Terrain:
   m_TreeMaximumFullLODCount: 50
   m_DetailObjectDistance: 139
   m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 102
+  m_HeightmapPixelError: 1
   m_SplatMapDistance: 500
   m_HeightmapMinimumLODSimplification: 0
   m_HeightmapMaximumLOD: 0
