@@ -21,15 +21,36 @@ public class PlaneScript : MonoBehaviour
     [SerializeField] private float frontWingMaxDeflection = 8f;
     [SerializeField] private float frontWingResponseSpeed = 45f;
 
+    [Header("Landing")]
+    [Tooltip("How far below the plane's pivot the ground may be to count as 'close to the ground'.")]
+    [SerializeField] private float groundCheckDistance = 4f;
+    [Tooltip("Which layers count as ground. Tip: put the terrain on its own 'Ground' layer.")]
+    [SerializeField] private LayerMask groundLayers = ~0;
+    [Tooltip("How long (seconds) the plane must stay close to the ground before T lands it.")]
+    [SerializeField] private float landingHoldTime = 1f;
+    [Tooltip("How fast the plane brakes after landing, in units per second squared.")]
+    [SerializeField] private float landingBrakeDeceleration = 15f;
+    [Tooltip("Downward speed while landing, so the plane settles onto the ground.")]
+    [SerializeField] private float landingSinkSpeed = 3f;
+
     private float currentBankAngle;
     private float currentPitchAngle;
     private float currentForwardSpeed;
     private float currentVerticalSpeed;
     private float currentFrontWingAngle;
     private bool engineStarted;
+    private bool isLanding;
+    private float timeNearGround;
     private Quaternion frontWingRestRotation;
     private Rigidbody rb;
     private float currentYaw;
+    private readonly RaycastHit[] groundHits = new RaycastHit[8];
+
+    /// <summary>True when the player may press T to land (handy for a "Press T to land" UI hint).</summary>
+    public bool CanLand => engineStarted && timeNearGround >= landingHoldTime;
+
+    /// <summary>True while the plane is braking to a stop after a landing.</summary>
+    public bool IsLanding => isLanding;
 
     void Awake()
     {
@@ -74,18 +95,39 @@ public class PlaneScript : MonoBehaviour
         // Key presses are read in Update so none are missed
         if (Input.GetKeyDown(KeyCode.T))
         {
-            engineStarted = true;
+            if (!engineStarted && !isLanding)
+            {
+                // Standing still: start the engine (take off)
+                engineStarted = true;
+            }
+            else if (CanLand)
+            {
+                // Flying close to the ground for long enough: land
+                engineStarted = false;
+                isLanding = true;
+            }
         }
     }
 
-    // Movement now happens in FixedUpdate via the Rigidbody, so collisions work.
+    // Movement happens in FixedUpdate via the Rigidbody, so collisions work.
     // (Time.deltaTime inside FixedUpdate automatically equals the physics step.)
     void FixedUpdate()
     {
+        // Track how long the plane has been close to the ground
+        if (engineStarted && IsNearGround())
+        {
+            timeNearGround += Time.deltaTime;
+        }
+        else
+        {
+            timeNearGround = 0f;
+        }
+
+        float forwardChangeRate = isLanding ? landingBrakeDeceleration : forwardAcceleration;
         currentForwardSpeed = Mathf.MoveTowards(
             currentForwardSpeed,
             engineStarted ? forwardSpeed : 0f,
-            forwardAcceleration * Time.deltaTime);
+            forwardChangeRate * Time.deltaTime);
 
         float verticalInput = engineStarted ? Input.GetAxis("Vertical") : 0f;
         float turnInput = engineStarted ? Input.GetAxisRaw("Horizontal") : 0f;
@@ -125,10 +167,15 @@ public class PlaneScript : MonoBehaviour
 
         currentBankAngle = Mathf.MoveTowards(currentBankAngle, targetBankAngle, currentBankSpeed * Time.deltaTime);
         currentPitchAngle = Mathf.MoveTowards(currentPitchAngle, targetPitchAngle, currentPitchSpeed * Time.deltaTime);
+
+        // While landing, sink gently so the plane settles onto the ground;
+        // the ground collider stops it once it touches down.
+        float targetVerticalSpeed = isLanding ? -landingSinkSpeed : verticalInput * maxVerticalSpeed;
         currentVerticalSpeed = Mathf.MoveTowards(
             currentVerticalSpeed,
-            verticalInput * maxVerticalSpeed,
+            targetVerticalSpeed,
             verticalSpeed * Time.deltaTime);
+
         float targetFrontWingAngle = maxPitchAngle > 0f
             ? Mathf.Clamp(currentPitchAngle / maxPitchAngle, -1f, 1f) * frontWingMaxDeflection
             : 0f;
@@ -152,6 +199,15 @@ public class PlaneScript : MonoBehaviour
             transform.forward * currentForwardSpeed +
             Vector3.up * currentVerticalSpeed +
             bankDirection * (bankedClimbInput * bankedClimbSideSpeed);
+
+        // Landing finished: plane has come to a full stop
+        if (isLanding && Mathf.Approximately(currentForwardSpeed, 0f))
+        {
+            isLanding = false;
+            currentVerticalSpeed = 0f;
+            velocity = Vector3.zero;
+        }
+
         rb.linearVelocity = velocity;
 
         // Rotation: built from scratch every step from yaw, bank and pitch.
@@ -170,5 +226,34 @@ public class PlaneScript : MonoBehaviour
         {
             frontWing.localRotation = frontWingRestRotation * Quaternion.AngleAxis(currentFrontWingAngle, Vector3.right);
         }
+    }
+
+    // Casts a ray straight down and ignores the plane's own colliders.
+    private bool IsNearGround()
+    {
+        int hitCount = Physics.RaycastNonAlloc(
+            transform.position,
+            Vector3.down,
+            groundHits,
+            groundCheckDistance,
+            groundLayers,
+            QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (groundHits[i].collider.attachedRigidbody != rb)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Shows the ground-check ray in the Scene view (green = close enough to land)
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Application.isPlaying && CanLand ? Color.green : Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
     }
 }

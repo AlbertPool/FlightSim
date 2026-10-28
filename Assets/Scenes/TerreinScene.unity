@@ -578,6 +578,13 @@ MonoBehaviour:
   frontWing: {fileID: 1152797698}
   frontWingMaxDeflection: 8
   frontWingResponseSpeed: 45
+  groundCheckDistance: 4
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  landingHoldTime: 1
+  landingBrakeDeceleration: 15
+  landingSinkSpeed: 3
 --- !u!114 &425932650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103,7 +1110,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021877051}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eac094ebb5c0cd44e9b12ac701c82557, type: 3}
   m_Name: 
@@ -1600,7 +1607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpectatorCamera
   target: {fileID: 2117488088}
-  maxDistance: 50
+  maxDistance: 90
   aheadDistance: 80
   sideDistance: 30
   height: 5
