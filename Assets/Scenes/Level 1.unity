@@ -439,7 +439,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
-      value: Ring5 (3)
+      value: Ring4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -471,6 +471,11 @@ MonoBehaviour:
   hitOffset: {x: 0, y: 0, z: 0}
   hideOnHit: 0
   hitSound: {fileID: 0}
+--- !u!4 &87658942 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
+  m_PrefabInstance: {fileID: 87658937}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &193412165
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +671,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
-      value: Ring5 (2)
+      value: Ring3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -773,7 +778,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
-      value: Ring5
+      value: Ring1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1236,7 +1241,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
-      value: Ring5 (4)
+      value: Ring5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1268,6 +1273,11 @@ MonoBehaviour:
   hitOffset: {x: 0, y: 0, z: 0}
   hideOnHit: 0
   hitSound: {fileID: 0}
+--- !u!4 &728788419 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
+  m_PrefabInstance: {fileID: 728788414}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &793058207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,26 +1883,8 @@ MonoBehaviour:
   - {fileID: 316359286}
   - {fileID: 1332299039}
   - {fileID: 264463366}
-  - {fileID: 456378630}
---- !u!114 &2000003001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1316813776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79a34be782194e3fba95df7942f33ef0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visualIndicatorManager: {fileID: 1582004258}
-  ringManager: {fileID: 1124540084}
-  orderedRings:
-  - {fileID: 316359287}
-  - {fileID: 1332299036}
-  - {fileID: 264463363}
-  - {fileID: 456378627}
+  - {fileID: 87658942}
+  - {fileID: 728788419}
 --- !u!4 &1316813778
 Transform:
   m_ObjectHideFlags: 0
@@ -1978,7 +1970,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
-      value: Ring5 (1)
+      value: Ring2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2045,6 +2037,55 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1620088548}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1398374633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1398374635}
+  - component: {fileID: 1398374634}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1398374634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1398374633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 3627b2002a249b44e92ed5dd9f790ee6, type: 2}
+--- !u!4 &1398374635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1398374633}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 61.1, y: 5.6000004, z: 8.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1582004257
 GameObject:
@@ -2282,6 +2323,26 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &2000003001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316813776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a34be782194e3fba95df7942f33ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualIndicatorManager: {fileID: 1582004258}
+  ringManager: {fileID: 1124540084}
+  orderedRings:
+  - {fileID: 316359287}
+  - {fileID: 1332299036}
+  - {fileID: 264463363}
+  - {fileID: 87658939}
+  - {fileID: 728788416}
 --- !u!1 &2019404595
 GameObject:
   m_ObjectHideFlags: 0
@@ -2361,3 +2422,4 @@ SceneRoots:
   - {fileID: 1124540085}
   - {fileID: 2019404597}
   - {fileID: 1582004259}
+  - {fileID: 1398374635}
