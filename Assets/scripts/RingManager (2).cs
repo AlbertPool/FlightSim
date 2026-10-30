@@ -21,6 +21,7 @@ public class RingManager : MonoBehaviour
 
     /// <summary>Hook for later, e.g. to start the landing or the outro.</summary>
     public event Action OnAllRingsHit;
+    public event Action<RingTrigger> RingWasHit;
 
     public int TotalRings { get; private set; }
     public int RingsHit { get; private set; }
@@ -48,6 +49,7 @@ public class RingManager : MonoBehaviour
         if (HasWon) return;
 
         RingsHit++;
+        RingWasHit?.Invoke(ring);
         UpdateCounter();
 
         if (RingsHit >= TotalRings)

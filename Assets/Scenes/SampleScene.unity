@@ -152,7 +152,7 @@ MonoBehaviour:
   _targetIndicatorManager: {fileID: 115627618}
   _canvas: {fileID: 1046920558}
   _content: {fileID: 1041801533}
-  _addIndicatorMode: 0
+  _addIndicatorMode: 1
   _syncBoundaryScaleWithCanvas: 1
 --- !u!4 &78349850
 Transform:
@@ -1363,8 +1363,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1423017263}
   - component: {fileID: 1423017262}
+  - component: {fileID: 1909876543}
   m_Layer: 0
-  m_Name: Simple Targets Indicators Setup Example
+  m_Name: Sequential Ring Indicators
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1377,7 +1378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1423017261}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71b70b7c253f5aa41b1dea527de0ff1a, type: 3}
   m_Name: 
@@ -1389,6 +1390,26 @@ MonoBehaviour:
   - {fileID: 1750401276}
   - {fileID: 1500179665}
   - {fileID: 1355791421}
+--- !u!114 &1909876543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423017261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a34be782194e3fba95df7942f33ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualIndicatorManager: {fileID: 78349849}
+  ringManager: {fileID: 325907918}
+  orderedRings:
+  - {fileID: 2043252921}
+  - {fileID: 1422573677}
+  - {fileID: 1750401273}
+  - {fileID: 1500179662}
+  - {fileID: 1355791418}
 --- !u!4 &1423017263
 Transform:
   m_ObjectHideFlags: 0
