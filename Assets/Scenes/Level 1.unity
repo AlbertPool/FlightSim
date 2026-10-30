@@ -1847,7 +1847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3f6d05e68634d640939c64547e81ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultVisualIndicatorPrefab: {fileID: 1034691875879925680, guid: a4909942549522345961c8c2130bda02, type: 3}
+  _defaultVisualIndicatorPrefab: {fileID: 7688245853580453017, guid: 5bd61fabf52ed4f4d8d4dd708028bd21, type: 3}
   _targetIndicatorManager: {fileID: 2019404596}
   _canvas: {fileID: 796260714}
   _content: {fileID: 612417388}

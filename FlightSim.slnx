@@ -1,8 +1,11 @@
 ﻿<Solution>
   <Project Path="Meryel.CodeAssist.Editor.csproj" />
+  <Project Path="TargetIndicators.Samples.csproj" />
+  <Project Path="TargetIndicators.csproj" />
   <Project Path="com.cqf.urpvolumetricfog.runtime.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="TargetIndicators.Editor.csproj" />
   <Project Path="com.cqf.urpvolumetricfog.editor.csproj" />
   <Project Path="VolumetricCloudsURP.csproj" />
   <Project Path="VolumetricCloudsURP.Editor.csproj" />
