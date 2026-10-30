@@ -1,20 +1,50 @@
+
 using UnityEngine;
 using System.IO.Ports;
 using System.Globalization;
+using System.Collections;
 
 public class ESP32reader : MonoBehaviour
 {
     [Header("ESP32")]
     public float usbValue;
+public float targetValue;
+public float smoothSpeed = 5f;
+    [Header("Instellingen")]
+    public float retryInterval = 3f;
 
     private SerialPort serialPort;
+    private Coroutine searchCoroutine;
 
     private const int BAUD_RATE = 115200;
     private const string DEVICE_NAME = "ESP32_CONTROLLER";
 
     void Start()
     {
-        FindESP32();
+        searchCoroutine = StartCoroutine(SearchForESP32());
+    }
+
+    IEnumerator SearchForESP32()
+    {
+        while (serialPort == null || !serialPort.IsOpen)
+        {
+            Debug.Log("Zoeken naar ESP32...");
+
+            FindESP32();
+
+            if (serialPort == null || !serialPort.IsOpen)
+            {
+                Debug.LogWarning(
+                    "ESP32 niet gevonden. Nieuwe poging over "
+                    + retryInterval + " seconden."
+                );
+
+                yield return new WaitForSeconds(retryInterval);
+            }
+        }
+
+        Debug.Log("ESP32 succesvol verbonden!");
+        searchCoroutine = null;
     }
 
     void FindESP32()
@@ -34,7 +64,7 @@ public class ESP32reader : MonoBehaviour
             }
         }
 
-        Debug.LogError("ESP32 niet gevonden!");
+        Debug.LogWarning("ESP32 niet gevonden!");
     }
 
     bool TryConnect(string portName)
@@ -43,18 +73,18 @@ public class ESP32reader : MonoBehaviour
 
         try
         {
-            testPort = new SerialPort(portName, BAUD_RATE);
-
-            testPort.ReadTimeout = 1000;
-            testPort.WriteTimeout = 1000;
-            testPort.NewLine = "\n";
+            testPort = new SerialPort(portName, BAUD_RATE)
+            {
+                ReadTimeout = 1000,
+                WriteTimeout = 1000,
+                NewLine = "\n"
+            };
 
             testPort.Open();
 
-            // Geef de ESP32 even tijd om te initialiseren
+            // Geef de ESP32 tijd om te initialiseren
             System.Threading.Thread.Sleep(200);
 
-            // Oude data verwijderen
             testPort.DiscardInBuffer();
 
             // Handshake
@@ -71,36 +101,45 @@ public class ESP32reader : MonoBehaviour
             }
 
             testPort.Close();
+            testPort.Dispose();
         }
         catch (System.Exception e)
         {
-            Debug.Log("Poort " + portName + " is niet de ESP32: " + e.Message);
+            Debug.Log("Poort " + portName + " niet geschikt: " + e.Message);
 
-            if (testPort != null && testPort.IsOpen)
+            if (testPort != null)
             {
-                testPort.Close();
+                try
+                {
+                    if (testPort.IsOpen)
+                        testPort.Close();
+
+                    testPort.Dispose();
+                }
+                catch { }
             }
         }
 
         return false;
     }
 
-    void Update()
+  void Update()
+{
+    if (serialPort != null && serialPort.IsOpen)
     {
-        if (serialPort == null || !serialPort.IsOpen)
-        {
-            return;
-        }
-
         try
         {
             while (serialPort.BytesToRead > 0)
             {
                 string data = serialPort.ReadLine().Trim();
-                if (float.TryParse(data, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
+
+                if (float.TryParse(
+                    data,
+                    NumberStyles.Float,
+                    CultureInfo.InvariantCulture,
+                    out float value))
                 {
-                    usbValue = value;
-                    Debug.Log("ESP32 waarde: " + usbValue);
+                    targetValue = value;
                 }
             }
         }
@@ -111,8 +150,21 @@ public class ESP32reader : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError("USB fout: " + e.Message);
+
+            Disconnect();
+
+            if (searchCoroutine == null)
+                searchCoroutine = StartCoroutine(SearchForESP32());
         }
     }
+
+    // Smooth de waarde geleidelijk richting de doelwaarde
+    usbValue = Mathf.Lerp(
+        usbValue,
+        targetValue,
+        1f - Mathf.Exp(-smoothSpeed * Time.deltaTime)
+    );
+}
 
     void OnDestroy()
     {
@@ -128,13 +180,20 @@ public class ESP32reader : MonoBehaviour
     {
         if (serialPort != null)
         {
-            if (serialPort.IsOpen)
+            try
             {
-                serialPort.Close();
+                if (serialPort.IsOpen)
+                    serialPort.Close();
+
+                serialPort.Dispose();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("Fout bij afsluiten: " + e.Message);
             }
 
-            serialPort.Dispose();
             serialPort = null;
         }
     }
 }
+
