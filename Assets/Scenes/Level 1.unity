@@ -440,7 +440,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
+      objectReference: {fileID: 2100000, guid: 163a1442b0975b54aa4974766ffd747a, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
       value: Ring4
@@ -672,7 +672,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
+      objectReference: {fileID: 2100000, guid: 163a1442b0975b54aa4974766ffd747a, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
       value: Ring3
@@ -779,7 +779,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
+      objectReference: {fileID: 2100000, guid: 163a1442b0975b54aa4974766ffd747a, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
       value: Ring1
@@ -791,6 +791,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 316359287}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 316359288}
   m_SourcePrefab: {fileID: 100100000, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
 --- !u!1 &316359285 stripped
 GameObject:
@@ -819,6 +822,19 @@ MonoBehaviour:
   hitOffset: {x: 0, y: 0, z: 0}
   hideOnHit: 0
   hitSound: {fileID: 0}
+--- !u!114 &316359288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316359285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93df3e782ff644d75832d2f313eb3492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ringetjedraai
+  draaisnelheid: 50
 --- !u!1 &366761979
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,7 +1258,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
+      objectReference: {fileID: 2100000, guid: 163a1442b0975b54aa4974766ffd747a, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
       value: Ring5
@@ -1879,7 +1895,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 60b55481b70f9a84bb28e3637fd64bcb, type: 2}
+      objectReference: {fileID: 2100000, guid: 163a1442b0975b54aa4974766ffd747a, type: 2}
     - target: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       propertyPath: m_Name
       value: Ring2
@@ -1891,6 +1907,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1332299036}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1332299040}
   m_SourcePrefab: {fileID: 100100000, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
 --- !u!1 &1332299035 stripped
 GameObject:
@@ -1919,6 +1938,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
   m_PrefabInstance: {fileID: 1332299034}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1332299040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332299035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93df3e782ff644d75832d2f313eb3492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ringetjedraai
+  draaisnelheid: 50
 --- !u!1 &1388833696
 GameObject:
   m_ObjectHideFlags: 0
