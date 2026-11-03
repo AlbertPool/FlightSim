@@ -25,18 +25,28 @@ public class AfkDetectie : MonoBehaviour
     {
         laatsteActiviteit = Time.unscaledTime;
 
-        // Controleer of we in het hoofdmenu zitten.
-        isMenuScene =
-            SceneManager.GetActiveScene().name == hoofdmenuSceneNaam;
+        ControleerScene();
 
         if (afkPanel != null)
             afkPanel.SetActive(false);
 
         if (jaKnop != null)
+        {
+            jaKnop.onClick.RemoveListener(SpelerIsErNog);
             jaKnop.onClick.AddListener(SpelerIsErNog);
+        }
 
         if (hoofdmenuKnop != null)
+        {
+            hoofdmenuKnop.onClick.RemoveListener(TerugNaarHoofdmenu);
             hoofdmenuKnop.onClick.AddListener(TerugNaarHoofdmenu);
+        }
+    }
+
+    private void ControleerScene()
+    {
+        isMenuScene =
+            SceneManager.GetActiveScene().name == hoofdmenuSceneNaam;
     }
 
     private void Update()
@@ -44,14 +54,19 @@ public class AfkDetectie : MonoBehaviour
         if (isAfk)
             return;
 
-        // Registreer muis- en toetsenbordactiviteit.
-        if (Input.anyKeyDown ||
+        // Controleer toetsenbordactiviteit.
+        bool toetsenbord = Input.anyKeyDown;
+
+        // Controleer muisactiviteit.
+        bool muis =
             Input.GetMouseButtonDown(0) ||
             Input.GetMouseButtonDown(1) ||
             Input.GetMouseButtonDown(2) ||
             Input.mouseScrollDelta.sqrMagnitude > 0f ||
             Input.GetAxisRaw("Mouse X") != 0f ||
-            Input.GetAxisRaw("Mouse Y") != 0f)
+            Input.GetAxisRaw("Mouse Y") != 0f;
+
+        if (toetsenbord || muis)
         {
             laatsteActiviteit = Time.unscaledTime;
         }
@@ -64,12 +79,10 @@ public class AfkDetectie : MonoBehaviour
         {
             if (isMenuScene)
             {
-                // In het menu ga je altijd terug naar het hoofdmenu.
                 TerugNaarHoofdmenu();
             }
             else
             {
-                // Tijdens gameplay verschijnt de AFK-melding.
                 ToonAfkPanel();
             }
         }
@@ -83,6 +96,7 @@ public class AfkDetectie : MonoBehaviour
             afkPanel.SetActive(true);
 
         Time.timeScale = 0f;
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -90,6 +104,7 @@ public class AfkDetectie : MonoBehaviour
     public void SpelerIsErNog()
     {
         isAfk = false;
+
         laatsteActiviteit = Time.unscaledTime;
 
         if (afkPanel != null)
