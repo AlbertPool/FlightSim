@@ -23,13 +23,23 @@ public class RingTrigger : MonoBehaviour
 
     public bool IsHit { get; private set; }
 
+    private SphereCollider hitZone;
+    private Renderer[] ringRenderers;
+    private bool[] initialRendererStates;
+    private bool sequenceActive = true;
+
     private void Awake()
     {
         // Create a dedicated trigger so the ring's own (mesh) collider stays untouched.
-        var zone = gameObject.AddComponent<SphereCollider>();
-        zone.isTrigger = true;
-        zone.radius = hitRadius;
-        zone.center = hitOffset;
+        hitZone = gameObject.AddComponent<SphereCollider>();
+        hitZone.isTrigger = true;
+        hitZone.radius = hitRadius;
+        hitZone.center = hitOffset;
+
+        ringRenderers = GetComponentsInChildren<Renderer>(true);
+        initialRendererStates = new bool[ringRenderers.Length];
+        for (var i = 0; i < ringRenderers.Length; i++)
+            initialRendererStates[i] = ringRenderers[i].enabled;
     }
 
     private void Start()
@@ -42,7 +52,7 @@ public class RingTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (IsHit) return;
+        if (!sequenceActive || IsHit) return;
         if (!other.transform.root.CompareTag(playerTag)) return;
 
         IsHit = true;
@@ -51,10 +61,25 @@ public class RingTrigger : MonoBehaviour
             AudioSource.PlayClipAtPoint(hitSound, transform.position);
 
         if (hideOnHit)
-            foreach (var r in GetComponentsInChildren<Renderer>())
-                r.enabled = false;
+            SetRenderersVisible(false);
 
         RingManager.Instance?.RingHit(this);
+    }
+
+    public void SetSequenceActive(bool active)
+    {
+        sequenceActive = active;
+        hitZone.enabled = active && !IsHit;
+        SetRenderersVisible(active && (!IsHit || !hideOnHit));
+    }
+
+    private void SetRenderersVisible(bool visible)
+    {
+        for (var i = 0; i < ringRenderers.Length; i++)
+        {
+            if (ringRenderers[i] != null)
+                ringRenderers[i].enabled = visible && initialRendererStates[i];
+        }
     }
 
     // Shows the hit zone in the Scene view so you can size it.

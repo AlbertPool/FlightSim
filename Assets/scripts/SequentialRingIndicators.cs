@@ -55,10 +55,12 @@ public class SequentialRingIndicators : MonoBehaviour
             trackedRings.Add(ring);
             indicatorIds.Add(id);
             visualIndicatorManager.HideVisualIndicator(id);
+            ring.SetSequenceActive(false);
         }
 
         activeRingIndex = 0;
         ShowCurrentIndicator();
+        ShowCurrentRing();
     }
 
     private void OnDisable()
@@ -72,6 +74,12 @@ public class SequentialRingIndicators : MonoBehaviour
                 visualIndicatorManager.RemoveTargetIndicator(id);
         }
 
+        foreach (var ring in trackedRings)
+        {
+            if (ring != null)
+                ring.SetSequenceActive(true);
+        }
+
         trackedRings.Clear();
         indicatorIds.Clear();
         activeRingIndex = 0;
@@ -83,13 +91,21 @@ public class SequentialRingIndicators : MonoBehaviour
             return;
 
         visualIndicatorManager.HideVisualIndicator(indicatorIds[activeRingIndex]);
+        trackedRings[activeRingIndex].SetSequenceActive(false);
         activeRingIndex++;
         ShowCurrentIndicator();
+        ShowCurrentRing();
     }
 
     private void ShowCurrentIndicator()
     {
         if (activeRingIndex < indicatorIds.Count)
             visualIndicatorManager.ShowVisualIndicator(indicatorIds[activeRingIndex]);
+    }
+
+    private void ShowCurrentRing()
+    {
+        if (activeRingIndex < trackedRings.Count)
+            trackedRings[activeRingIndex].SetSequenceActive(true);
     }
 }
