@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.Localization;
 
 // Shows how high the plane is above the ground, in meters (1 Unity unit = 1 meter).
 // 0 m = the bottom of the plane's collider touches the ground.
@@ -14,6 +15,8 @@ public class HeightMeter : MonoBehaviour
     [SerializeField] private float maxCheckDistance = 2000f;
     [SerializeField] private string label = "Hoogte";
 
+    private readonly LocalizedString localizedLabel = new LocalizedString("Level1_Table", "Hoogte_Key");
+    private string currentLocalizedLabel;
     private Collider planeCollider;
     private readonly RaycastHit[] hits = new RaycastHit[16];
 
@@ -22,6 +25,21 @@ public class HeightMeter : MonoBehaviour
     void Awake()
     {
         planeCollider = GetComponent<Collider>();
+    }
+
+    void OnEnable()
+    {
+        localizedLabel.StringChanged += OnLocalizedLabelChanged;
+    }
+
+    void OnDisable()
+    {
+        localizedLabel.StringChanged -= OnLocalizedLabelChanged;
+    }
+
+    void OnLocalizedLabelChanged(string value)
+    {
+        currentLocalizedLabel = value;
     }
 
     void Update()
@@ -54,9 +72,11 @@ public class HeightMeter : MonoBehaviour
 
         if (heightText != null)
         {
-            heightText.text = $"{label}: {HeightInMeters:0} m";
+            heightText.text = $"{DisplayLabel}: {HeightInMeters:0} m";
         }
     }
+
+    private string DisplayLabel => string.IsNullOrEmpty(currentLocalizedLabel) ? label : currentLocalizedLabel;
 
     // Fallback display when no TextMeshPro text is assigned
     void OnGUI()
@@ -70,7 +90,7 @@ public class HeightMeter : MonoBehaviour
         };
         style.normal.textColor = Color.white;
 
-        string text = $"{label}: {HeightInMeters:0} m";
+        string text = $"{DisplayLabel}: {HeightInMeters:0} m";
         GUI.Label(new Rect(22, 22, 400, 50), text, new GUIStyle(style) { normal = { textColor = Color.black } });
         GUI.Label(new Rect(20, 20, 400, 50), text, style);
     }

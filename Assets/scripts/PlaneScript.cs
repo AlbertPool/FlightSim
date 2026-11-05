@@ -262,6 +262,7 @@ public class PlaneScript : MonoBehaviour
             isLanding = false;
             currentVerticalSpeed = 0f;
             velocity = Vector3.zero;
+            RingManager.Instance?.PlaneLanded();
         }
 
         rb.linearVelocity = velocity;
@@ -318,4 +319,3 @@ public class PlaneScript : MonoBehaviour
         );
     }
 }
-
