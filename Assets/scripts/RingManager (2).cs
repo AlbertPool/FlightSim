@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Keeps track of how many rings have been flown through,
@@ -26,6 +27,9 @@ public class RingManager : MonoBehaviour
     public int TotalRings { get; private set; }
     public int RingsHit { get; private set; }
     public bool HasWon { get; private set; }
+    public bool HasLanded { get; private set; }
+
+    private bool allRingsEventRaised;
 
     private void Awake()
     {
@@ -52,8 +56,27 @@ public class RingManager : MonoBehaviour
         RingWasHit?.Invoke(ring);
         UpdateCounter();
 
-        if (RingsHit >= TotalRings)
-            Win();
+        if (!allRingsEventRaised && TotalRings > 0 && RingsHit >= TotalRings)
+        {
+            allRingsEventRaised = true;
+            OnAllRingsHit?.Invoke();
+        }
+
+        TryCompleteLevel();
+    }
+
+    public void PlaneLanded()
+    {
+        HasLanded = true;
+        TryCompleteLevel();
+    }
+
+    private void TryCompleteLevel()
+    {
+        if (HasWon || !HasLanded || TotalRings == 0 || RingsHit < TotalRings)
+            return;
+
+        CompleteLevel();
     }
 
     private void UpdateCounter()
@@ -62,7 +85,7 @@ public class RingManager : MonoBehaviour
             counterText.text = $"{RingsHit} / {TotalRings}";
     }
 
-    private void Win()
+    private void CompleteLevel()
     {
         HasWon = true;
 
@@ -72,6 +95,17 @@ public class RingManager : MonoBehaviour
         if (winSound != null && Camera.main != null)
             AudioSource.PlayClipAtPoint(winSound, Camera.main.transform.position);
 
-        OnAllRingsHit?.Invoke();
+        int nextBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (nextBuildIndex >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError(
+                $"Level completed, but there is no enabled scene at build index {nextBuildIndex}. " +
+                "Add the next level to Build Settings.",
+                this
+            );
+            return;
+        }
+
+        SceneManager.LoadSceneAsync(nextBuildIndex);
     }
 }
