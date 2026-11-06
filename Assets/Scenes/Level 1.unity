@@ -1463,6 +1463,8 @@ GameObject:
   - component: {fileID: 721033838}
   - component: {fileID: 721033840}
   - component: {fileID: 721033839}
+  - component: {fileID: 721033842}
+  - component: {fileID: 721033841}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
@@ -1532,6 +1534,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721033837}
   m_CullTransparentMesh: 1
+--- !u!114 &721033841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721033837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c185fc23a06cb64fbb255472512028e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialFade
+  dismissAction: {fileID: 0}
+  fallbackKey: 34
+  fadeDuration: 0.75
+  minShowTime: 1
+  disableWhenDone: 1
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!225 &721033842
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721033837}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &728788414
 PrefabInstance:
   m_ObjectHideFlags: 0
