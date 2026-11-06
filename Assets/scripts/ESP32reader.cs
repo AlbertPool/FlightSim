@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System;
 using System.IO.Ports;
@@ -8,9 +7,14 @@ using System.Threading;
 
 public class ESP32reader : MonoBehaviour
 {
-    [Header("ESP32")]
+    [Header("ESP32 - Sensor 1 (hoogte)")]
     public float usbValue;
     public float targetValue;
+
+    [Header("ESP32 - Sensor 2 (roll)")]
+    public float usbValue2;
+    public float targetValue2;
+
     public float smoothSpeed = 5f;
 
     [Header("Instellingen")]
@@ -27,6 +31,7 @@ public class ESP32reader : MonoBehaviour
 
     private readonly object dataLock = new object();
     private float receivedValue;
+    private float receivedValue2;
 
     private const int BAUD_RATE = 115200;
     private const string DEVICE_NAME = "ESP32_CONTROLLER";
@@ -100,14 +105,17 @@ public class ESP32reader : MonoBehaviour
 
             testPort.WriteLine("HELLO");
 
-            string response = testPort.ReadLine().Trim();
-
-            Debug.Log("Antwoord van " + portName + ": " + response);
-
-            if (response == DEVICE_NAME)
+            // Meetregels kunnen tussen het antwoord zitten, dus meerdere regels lezen
+            for (int i = 0; i < 10; i++)
             {
-                serialPort = testPort;
-                return true;
+                string response = testPort.ReadLine().Trim();
+                Debug.Log("Antwoord van " + portName + ": " + response);
+
+                if (response == DEVICE_NAME)
+                {
+                    serialPort = testPort;
+                    return true;
+                }
             }
 
             testPort.Close();
@@ -149,16 +157,18 @@ public class ESP32reader : MonoBehaviour
             try
             {
                 string data = serialPort.ReadLine().Trim();
+                string[] parts = data.Split(',');
 
-                if (float.TryParse(
-                    data,
-                    NumberStyles.Float,
-                    CultureInfo.InvariantCulture,
-                    out float value))
+                // Verwacht "hoogte,roll". Een mislukte meting (-1) wordt genegeerd.
+                if (parts.Length >= 2 &&
+                    float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float v1) &&
+                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float v2) &&
+                    v1 > 0f && v2 > 0f)
                 {
                     lock (dataLock)
                     {
-                        receivedValue = value;
+                        receivedValue = v1;
+                        receivedValue2 = v2;
                         hasReceivedValue = true;
                     }
                 }
@@ -182,14 +192,13 @@ public class ESP32reader : MonoBehaviour
             lock (dataLock)
             {
                 targetValue = receivedValue;
+                targetValue2 = receivedValue2;
             }
         }
 
-        usbValue = Mathf.Lerp(
-            usbValue,
-            targetValue,
-            1f - Mathf.Exp(-smoothSpeed * Time.deltaTime)
-        );
+        float t = 1f - Mathf.Exp(-smoothSpeed * Time.deltaTime);
+        usbValue = Mathf.Lerp(usbValue, targetValue, t);
+        usbValue2 = Mathf.Lerp(usbValue2, targetValue2, t);
 
         if (!running && serialPort != null)
         {

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -28,8 +27,13 @@ public class PlaneScript : MonoBehaviour
     [Header("ESP32 Besturing")]
     [SerializeField] private ESP32reader esp32Reader;
 
+    [Header("Hoogte sensor (sensor 1)")]
     [SerializeField] private float sensorMinCm = 3f;
     [SerializeField] private float sensorMaxCm = 6f;
+
+    [Header("Roll sensor (sensor 2)")]
+    [SerializeField] private float rollSensorMinCm = 3f;
+    [SerializeField] private float rollSensorMaxCm = 6f;
 
     [Tooltip("Kleine marge tegen sensorruis.")]
     [SerializeField] private float sensorMarginCm = 0.05f;
@@ -137,38 +141,44 @@ public class PlaneScript : MonoBehaviour
             forwardChangeRate * Time.fixedDeltaTime
         );
 
+        bool espActive = engineStarted &&
+                         esp32Reader != null &&
+                         esp32Reader.HasReceivedValue;
+
         // Keyboard vertical control
         float verticalInput = engineStarted
             ? Input.GetAxis("Vertical")
             : 0f;
 
-        // ESP32 vertical control
-        if (engineStarted &&
-            esp32Reader != null &&
-            esp32Reader.HasReceivedValue)
+        // ESP32 vertical control (sensor 1)
+        if (espActive)
         {
-            float sensorValue = esp32Reader.usbValue;
-
-            float minValue = sensorMinCm + sensorMarginCm;
-            float maxValue = sensorMaxCm - sensorMarginCm;
-
             float normalizedValue = Mathf.InverseLerp(
-                minValue,
-                maxValue,
-                sensorValue
+                sensorMinCm + sensorMarginCm,
+                sensorMaxCm - sensorMarginCm,
+                esp32Reader.usbValue
             );
 
-            verticalInput = Mathf.Lerp(
-                -1f,
-                1f,
-                normalizedValue
-            );
+            verticalInput = Mathf.Lerp(-1f, 1f, normalizedValue);
         }
 
-        // Horizontal control
+        // Keyboard horizontal control
         float turnInput = engineStarted
             ? Input.GetAxisRaw("Horizontal")
             : 0f;
+
+        // ESP32 roll control (sensor 2)
+        // Draait de roll de verkeerde kant op? Wissel -1f en 1f hieronder om.
+        if (espActive)
+        {
+            float rollNorm = Mathf.InverseLerp(
+                rollSensorMinCm + sensorMarginCm,
+                rollSensorMaxCm - sensorMarginCm,
+                esp32Reader.usbValue2
+            );
+
+            turnInput = Mathf.Lerp(-1f, 1f, rollNorm);
+        }
 
         float targetPitchAngle = -verticalInput * maxPitchAngle;
         float targetBankAngle = -turnInput * maxBankAngle;
@@ -318,4 +328,3 @@ public class PlaneScript : MonoBehaviour
         );
     }
 }
-
