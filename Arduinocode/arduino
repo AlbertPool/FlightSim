@@ -1,0 +1,42 @@
+// Sensor 1 (hoogte): Trig 33, Echo 32
+// Sensor 2 (roll):   Trig 25, Echo 26
+const int trigPins[2] = {33, 25};
+const int echoPins[2] = {32, 26};
+
+float readDistance(int trig, int echo) {
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+
+  long duration = pulseIn(echo, HIGH, 20000); // 20 ms = ~3,4 meter
+  if (duration == 0) return -1;
+  return duration * 0.0343f / 2.0f;
+}
+
+void setup() {
+  Serial.begin(115200);
+  for (int i = 0; i < 2; i++) {
+    pinMode(trigPins[i], OUTPUT);
+    pinMode(echoPins[i], INPUT);
+  }
+}
+
+void loop() {
+  // Handshake met Unity
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    if (cmd == "HELLO") Serial.println("ESP32_CONTROLLER");
+  }
+
+  float d[2];
+  for (int i = 0; i < 2; i++) {
+    d[i] = readDistance(trigPins[i], echoPins[i]);
+    delay(20); // echo van vorige sensor laten uitdoven
+  }
+
+  // Formaat: hoogte,roll
+  Serial.printf("%.1f,%.1f\n", d[0], d[1]);
+}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Globalization;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlaneScript : MonoBehaviour
@@ -45,6 +46,11 @@ public class PlaneScript : MonoBehaviour
     [SerializeField] private float landingBrakeDeceleration = 15f;
     [SerializeField] private float landingSinkSpeed = 3f;
 
+    [Header("Debug")]
+    [SerializeField] private bool debugLogs = true;
+    [Tooltip("Hoe vaak (in seconden) de status in de Console komt.")]
+    [SerializeField] private float debugInterval = 0.5f;
+
     private float currentBankAngle;
     private float currentPitchAngle;
     private float currentForwardSpeed;
@@ -61,6 +67,12 @@ public class PlaneScript : MonoBehaviour
 
     private readonly RaycastHit[] groundHits = new RaycastHit[8];
 
+    // Debug
+    private float nextDebugTime;
+    private bool prevEspActive;
+    private float dbgVertNorm;
+    private float dbgRollNorm;
+
     public bool CanLand => engineStarted && timeNearGround >= landingHoldTime;
     public bool IsLanding => isLanding;
 
@@ -74,6 +86,17 @@ public class PlaneScript : MonoBehaviour
         rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        // Reader automatisch zoeken als hij niet in de Inspector is gesleept
+        if (esp32Reader == null)
+        {
+            esp32Reader = FindFirstObjectByType<ESP32reader>();
+
+            if (esp32Reader != null)
+                Debug.Log("[Plane] esp32Reader stond leeg, automatisch gevonden op '" + esp32Reader.name + "'.", this);
+            else
+                Debug.LogError("[Plane] Geen ESP32reader gevonden in de scene! Sleep hem in het veld 'Esp32 Reader' of voeg het script aan een GameObject toe.", this);
+        }
 
         if (frontWing == null)
         {
@@ -93,13 +116,14 @@ public class PlaneScript : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Front wing Cube.035 niet gevonden.", this);
+            Debug.LogWarning("[Plane] Front wing Cube.035 niet gevonden.", this);
         }
     }
 
     void Start()
     {
         currentForwardSpeed = 0f;
+        Debug.Log("[Plane] Klaar. Druk op T om de motor te starten.", this);
     }
 
     void Update()
@@ -109,11 +133,19 @@ public class PlaneScript : MonoBehaviour
             if (!engineStarted && !isLanding)
             {
                 engineStarted = true;
+                Debug.Log("[Plane] Motor GESTART.", this);
             }
             else if (CanLand)
             {
                 engineStarted = false;
                 isLanding = true;
+                Debug.Log("[Plane] Landing gestart.", this);
+            }
+            else
+            {
+                Debug.Log("[Plane] T ingedrukt, maar landen kan nog niet. Tijd bij de grond: "
+                    + timeNearGround.ToString("F2", CultureInfo.InvariantCulture)
+                    + " / " + landingHoldTime.ToString("F2", CultureInfo.InvariantCulture) + " s", this);
             }
         }
     }
@@ -145,6 +177,14 @@ public class PlaneScript : MonoBehaviour
                          esp32Reader != null &&
                          esp32Reader.HasReceivedValue;
 
+        if (espActive != prevEspActive)
+        {
+            prevEspActive = espActive;
+            Debug.Log(espActive
+                ? "[Plane] ESP32-besturing is nu ACTIEF (hoogte + roll)."
+                : "[Plane] ESP32-besturing is nu UIT, toetsenbord actief.", this);
+        }
+
         // Keyboard vertical control
         float verticalInput = engineStarted
             ? Input.GetAxis("Vertical")
@@ -153,13 +193,13 @@ public class PlaneScript : MonoBehaviour
         // ESP32 vertical control (sensor 1)
         if (espActive)
         {
-            float normalizedValue = Mathf.InverseLerp(
+            dbgVertNorm = Mathf.InverseLerp(
                 sensorMinCm + sensorMarginCm,
                 sensorMaxCm - sensorMarginCm,
                 esp32Reader.usbValue
             );
 
-            verticalInput = Mathf.Lerp(-1f, 1f, normalizedValue);
+            verticalInput = Mathf.Lerp(-1f, 1f, dbgVertNorm);
         }
 
         // Keyboard horizontal control
@@ -171,13 +211,13 @@ public class PlaneScript : MonoBehaviour
         // Draait de roll de verkeerde kant op? Wissel -1f en 1f hieronder om.
         if (espActive)
         {
-            float rollNorm = Mathf.InverseLerp(
+            dbgRollNorm = Mathf.InverseLerp(
                 rollSensorMinCm + sensorMarginCm,
                 rollSensorMaxCm - sensorMarginCm,
                 esp32Reader.usbValue2
             );
 
-            turnInput = Mathf.Lerp(-1f, 1f, rollNorm);
+            turnInput = Mathf.Lerp(-1f, 1f, dbgRollNorm);
         }
 
         float targetPitchAngle = -verticalInput * maxPitchAngle;
@@ -272,7 +312,7 @@ public class PlaneScript : MonoBehaviour
             isLanding = false;
             currentVerticalSpeed = 0f;
             velocity = Vector3.zero;
-            RingManager.Instance?.PlaneLanded();
+            Debug.Log("[Plane] Geland en gestopt.", this);
         }
 
         rb.linearVelocity = velocity;
@@ -295,6 +335,45 @@ public class PlaneScript : MonoBehaviour
                 frontWingRestRotation *
                 Quaternion.AngleAxis(currentFrontWingAngle, Vector3.right);
         }
+
+        if (debugLogs && Time.time >= nextDebugTime)
+        {
+            nextDebugTime = Time.time + debugInterval;
+            LogStatus(espActive, verticalInput, turnInput);
+        }
+    }
+
+    void LogStatus(bool espActive, float verticalInput, float turnInput)
+    {
+        string reason = "";
+
+        if (!engineStarted) reason = " (motor staat uit, druk T)";
+        else if (esp32Reader == null) reason = " (esp32Reader is LEEG)";
+        else if (!esp32Reader.HasReceivedValue) reason = " (nog geen geldige ESP32-data)";
+
+        string msg = "[Plane] motor=" + engineStarted
+            + " | ESP actief=" + espActive + reason
+            + " | speed=" + currentForwardSpeed.ToString("F1", CultureInfo.InvariantCulture);
+
+        if (espActive)
+        {
+            msg += " | hoogte sensor=" + esp32Reader.usbValue.ToString("F2", CultureInfo.InvariantCulture)
+                + " cm -> norm=" + dbgVertNorm.ToString("F2", CultureInfo.InvariantCulture)
+                + " -> vertical=" + verticalInput.ToString("F2", CultureInfo.InvariantCulture)
+                + " | roll sensor=" + esp32Reader.usbValue2.ToString("F2", CultureInfo.InvariantCulture)
+                + " cm -> norm=" + dbgRollNorm.ToString("F2", CultureInfo.InvariantCulture)
+                + " -> turn=" + turnInput.ToString("F2", CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            msg += " | toetsenbord vertical=" + verticalInput.ToString("F2", CultureInfo.InvariantCulture)
+                + " turn=" + turnInput.ToString("F2", CultureInfo.InvariantCulture);
+        }
+
+        msg += " | pitch=" + currentPitchAngle.ToString("F1", CultureInfo.InvariantCulture)
+            + " bank=" + currentBankAngle.ToString("F1", CultureInfo.InvariantCulture);
+
+        Debug.Log(msg, this);
     }
 
     private bool IsNearGround()

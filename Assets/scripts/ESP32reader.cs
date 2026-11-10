@@ -1,253 +1,306 @@
+
 using UnityEngine;
 using System;
 using System.IO.Ports;
 using System.Globalization;
-using System.Collections;
 using System.Threading;
+using System.Collections.Generic;
 
 public class ESP32reader : MonoBehaviour
 {
-    [Header("ESP32 - Sensor 1 (hoogte)")]
+    [Header("Sensor 1 - Hoogte")]
     public float usbValue;
     public float targetValue;
 
-    [Header("ESP32 - Sensor 2 (roll)")]
+    [Header("Sensor 2 - Roll")]
     public float usbValue2;
     public float targetValue2;
 
-    public float smoothSpeed = 5f;
-
     [Header("Instellingen")]
+    public float smoothSpeed = 5f;
     public float retryInterval = 3f;
+    public string preferredPort = "";
+    public float bootWaitSeconds = 2f;
+
+    [Header("Debug")]
+    public bool debugLogs = true;
 
     private SerialPort serialPort;
-    private Coroutine searchCoroutine;
-
-    private Thread readThread;
+    private Thread worker;
     private volatile bool running;
-
-    private volatile bool hasReceivedValue = false;
-    public bool HasReceivedValue => hasReceivedValue;
+    private volatile bool connected;
 
     private readonly object dataLock = new object();
-    private float receivedValue;
-    private float receivedValue2;
 
-    private const int BAUD_RATE = 115200;
-    private const string DEVICE_NAME = "ESP32_CONTROLLER";
+    private float receivedHeight;
+    private float receivedRoll;
+
+    public bool HasHeight { get; private set; }
+    public bool HasRoll { get; private set; }
+
+    public bool HasReceivedValue => HasHeight || HasRoll;
+
+    private string currentPort = "";
+
+    public string StatusText =>
+        connected ? "Verbonden met " + currentPort : "Zoekt naar ESP32...";
 
     void Start()
     {
-        searchCoroutine = StartCoroutine(SearchForESP32());
+        if (debugLogs)
+            Debug.Log("[ESP32] Start zoeken...");
+
+        StartConnection();
     }
 
-    IEnumerator SearchForESP32()
+    void StartConnection()
     {
-        while (serialPort == null || !serialPort.IsOpen)
-        {
-            Debug.Log("Zoeken naar ESP32...");
+        if (worker != null && worker.IsAlive)
+            return;
 
-            FindESP32();
-
-            if (serialPort == null || !serialPort.IsOpen)
-            {
-                Debug.LogWarning("ESP32 niet gevonden. Nieuwe poging over "
-                    + retryInterval + " seconden.");
-
-                yield return new WaitForSeconds(retryInterval);
-            }
-        }
-
-        Debug.Log("ESP32 succesvol verbonden!");
-
-        StartReading();
-
-        searchCoroutine = null;
+        running = true;
+        worker = new Thread(ConnectionLoop);
+        worker.IsBackground = true;
+        worker.Start();
     }
 
-    void FindESP32()
+    void ConnectionLoop()
     {
-        string[] ports = SerialPort.GetPortNames();
-
-        Debug.Log("Aantal gevonden COM-poorten: " + ports.Length);
-
-        foreach (string port in ports)
+        while (running)
         {
-            Debug.Log("COM-poort gevonden: " + port);
+            string[] ports;
 
-            if (TryConnect(port))
+            try
             {
-                Debug.Log("ESP32 gevonden op: " + port);
-                return;
+                ports = SerialPort.GetPortNames();
             }
-        }
-    }
-
-    bool TryConnect(string portName)
-    {
-        SerialPort testPort = null;
-
-        try
-        {
-            testPort = new SerialPort(portName, BAUD_RATE)
+            catch
             {
-                ReadTimeout = 1000,
-                WriteTimeout = 1000,
-                NewLine = "\n",
-                DtrEnable = false,
-                RtsEnable = false
-            };
-
-            testPort.Open();
-
-            Thread.Sleep(200);
-            testPort.DiscardInBuffer();
-
-            testPort.WriteLine("HELLO");
-
-            // Meetregels kunnen tussen het antwoord zitten, dus meerdere regels lezen
-            for (int i = 0; i < 10; i++)
-            {
-                string response = testPort.ReadLine().Trim();
-                Debug.Log("Antwoord van " + portName + ": " + response);
-
-                if (response == DEVICE_NAME)
-                {
-                    serialPort = testPort;
-                    return true;
-                }
+                Thread.Sleep(1000);
+                continue;
             }
 
-            testPort.Close();
-            testPort.Dispose();
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Poort " + portName + " niet geschikt: " + e.Message);
+            List<string> portList = new List<string>(ports);
 
-            if (testPort != null)
+            if (!string.IsNullOrEmpty(preferredPort))
             {
+                portList.Remove(preferredPort);
+                portList.Insert(0, preferredPort);
+            }
+
+            foreach (string port in portList)
+            {
+                if (!running)
+                    break;
+
+                SerialPort candidate = null;
+
                 try
                 {
-                    if (testPort.IsOpen)
-                        testPort.Close();
+                    if (debugLogs)
+                        Debug.Log("[ESP32] Probeer " + port);
 
-                    testPort.Dispose();
+                    candidate = new SerialPort(
+                        port,
+                        115200,
+                        Parity.None,
+                        8,
+                        StopBits.One
+                    );
+
+                    candidate.ReadTimeout = 500;
+                    candidate.WriteTimeout = 500;
+                    candidate.NewLine = "\n";
+                    candidate.DtrEnable = false;
+                    candidate.RtsEnable = false;
+
+                    candidate.Open();
+
+                    Thread.Sleep((int)(bootWaitSeconds * 1000));
+
+                    candidate.DiscardInBuffer();
+
+                    // Handshake met ESP32
+                    candidate.WriteLine("HELLO");
+
+                    bool handshakeValid = false;
+                    DateTime handshakeStart = DateTime.UtcNow;
+
+                    while (running &&
+                           (DateTime.UtcNow - handshakeStart).TotalSeconds < 5)
+                    {
+                        try
+                        {
+                            string response = candidate.ReadLine().Trim();
+
+                            if (response == "ESP32_CONTROLLER")
+                            {
+                                handshakeValid = true;
+                                break;
+                            }
+                        }
+                        catch (TimeoutException) { }
+                    }
+
+                    if (!handshakeValid)
+                        continue;
+
+                    serialPort = candidate;
+                    currentPort = port;
+                    connected = true;
+
+                    if (debugLogs)
+                        Debug.Log("[ESP32] Verbonden: " + port);
+
+                    ReadLoop(candidate);
+
+                    connected = false;
+                    serialPort = null;
+                    currentPort = "";
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    if (debugLogs)
+                        Debug.LogWarning("[ESP32] " + port + ": " + e.Message);
+                }
+                finally
+                {
+                    if (candidate != null)
+                    {
+                        try
+                        {
+                            if (candidate.IsOpen)
+                                candidate.Close();
+
+                            candidate.Dispose();
+                        }
+                        catch { }
+                    }
+                }
             }
+
+            if (running && !connected)
+                Thread.Sleep((int)(retryInterval * 1000));
         }
-
-        return false;
     }
 
-    void StartReading()
+    void ReadLoop(SerialPort port)
     {
-        running = true;
+        if (debugLogs)
+            Debug.Log("[ESP32] Sensorverbinding actief!");
 
-        readThread = new Thread(ReadSerialData);
-        readThread.IsBackground = true;
-        readThread.Start();
-    }
-
-    void ReadSerialData()
-    {
-        while (running && serialPort != null && serialPort.IsOpen)
+        while (running && port.IsOpen)
         {
             try
             {
-                string data = serialPort.ReadLine().Trim();
-                string[] parts = data.Split(',');
+                string line = port.ReadLine().Trim();
 
-                // Verwacht "hoogte,roll". Een mislukte meting (-1) wordt genegeerd.
-                if (parts.Length >= 2 &&
-                    float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float v1) &&
-                    float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float v2) &&
-                    v1 > 0f && v2 > 0f)
+                if (ParseSensorData(line, out float height, out float roll))
                 {
                     lock (dataLock)
                     {
-                        receivedValue = v1;
-                        receivedValue2 = v2;
-                        hasReceivedValue = true;
+                        // Sensor 1: Hoogte
+                        if (height >= 0)
+                        {
+                            receivedHeight = height;
+                            HasHeight = true;
+                        }
+
+                        // Sensor 2: Roll
+                        if (roll >= 0)
+                        {
+                            receivedRoll = roll;
+                            HasRoll = true;
+                        }
                     }
                 }
             }
             catch (TimeoutException)
             {
-                // Geen nieuwe data
+                // Wachten op nieuwe data.
             }
             catch (Exception e)
             {
-                Debug.LogError("Serial fout: " + e.Message);
-                running = false;
+                if (debugLogs)
+                    Debug.LogWarning("[ESP32] Verbinding verloren: " + e.Message);
+
+                break;
             }
         }
+    }
+
+    bool ParseSensorData(string line, out float height, out float roll)
+    {
+        height = -1;
+        roll = -1;
+
+        string[] parts = line.Split(',');
+
+        if (parts.Length < 2)
+            return false;
+
+        bool validHeight = float.TryParse(
+            parts[0].Trim(),
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out height
+        );
+
+        bool validRoll = float.TryParse(
+            parts[1].Trim(),
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out roll
+        );
+
+        return validHeight && validRoll;
     }
 
     void Update()
     {
-        if (hasReceivedValue)
+        lock (dataLock)
         {
-            lock (dataLock)
-            {
-                targetValue = receivedValue;
-                targetValue2 = receivedValue2;
-            }
+            if (HasHeight)
+                targetValue = receivedHeight;
+
+            if (HasRoll)
+                targetValue2 = receivedRoll;
         }
 
         float t = 1f - Mathf.Exp(-smoothSpeed * Time.deltaTime);
+
         usbValue = Mathf.Lerp(usbValue, targetValue, t);
         usbValue2 = Mathf.Lerp(usbValue2, targetValue2, t);
-
-        if (!running && serialPort != null)
-        {
-            Disconnect();
-
-            if (searchCoroutine == null)
-            {
-                searchCoroutine = StartCoroutine(SearchForESP32());
-            }
-        }
     }
 
     void OnDestroy()
     {
-        Disconnect();
+        StopConnection();
     }
 
     void OnApplicationQuit()
     {
-        Disconnect();
+        StopConnection();
     }
 
-    void Disconnect()
+    void StopConnection()
     {
         running = false;
-
-        if (readThread != null && readThread.IsAlive)
-        {
-            readThread.Join(1500);
-            readThread = null;
-        }
 
         if (serialPort != null)
         {
             try
             {
-                if (serialPort.IsOpen)
-                    serialPort.Close();
-
-                serialPort.Dispose();
+                serialPort.Close();
             }
-            catch (Exception e)
-            {
-                Debug.LogWarning("Fout bij afsluiten: " + e.Message);
-            }
-
-            serialPort = null;
+            catch { }
         }
 
-        hasReceivedValue = false;
+        if (worker != null && worker.IsAlive)
+        {
+            worker.Join(1000);
+            worker = null;
+        }
     }
 }
+
