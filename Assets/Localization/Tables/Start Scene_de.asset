@@ -26,6 +26,19 @@ MonoBehaviour:
     m_Localized: Der Flug
     m_Metadata:
       m_Items: []
+  - m_Id: 17357923905007616
+    m_Localized: Anweisungen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358221948055552
+    m_Localized: "Fliege durch alle Ringe und lande anschlie\xDFend das Flugzeug,
+      um das Level abzuschlie\xDFen."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358768352620544
+    m_Localized: Stufe 1
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

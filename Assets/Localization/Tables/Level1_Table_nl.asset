@@ -22,6 +22,27 @@ MonoBehaviour:
     m_Localized: Hoogte
     m_Metadata:
       m_Items: []
+  - m_Id: 406725662699520
+    m_Localized: Start Knop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407270913830912
+    m_Localized: 'Druk op de startknop om de motor te starten. '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407586442932224
+    m_Localized: Hendel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407785127112704
+    m_Localized: Trek de hendel naar je toe om te stijgen en laat hem rustig los
+      om weer te zakken.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 408095308476416
+    m_Localized: Druk de startknop eerst om dit bericht weg te doen
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
