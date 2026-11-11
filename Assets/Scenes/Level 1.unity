@@ -365,6 +365,8 @@ MonoBehaviour:
   esp32Reader: {fileID: 2096457168}
   sensorMinCm: 4
   sensorMaxCm: 10
+  rollSensorMinCm: 3
+  rollSensorMaxCm: 6
   sensorMarginCm: 0.05
   groundCheckDistance: 4
   groundLayers:
@@ -2903,7 +2905,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 303, y: 233}
+  m_AnchoredPosition: {x: 451, y: 233}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1584107560
@@ -3314,6 +3316,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ESP32reader
   usbValue: 0
   targetValue: 0
+  usbValue2: 0
+  targetValue2: 0
   smoothSpeed: 5
   retryInterval: 3
 --- !u!1660057539 &9223372036854775807

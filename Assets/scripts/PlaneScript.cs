@@ -64,6 +64,9 @@ public class PlaneScript : MonoBehaviour
     public bool CanLand => engineStarted && timeNearGround >= landingHoldTime;
     public bool IsLanding => isLanding;
 
+    // Wordt aangezet door VerticalOnlyLock (alleen in level 1)
+    public bool HorizontalLocked { get; set; }
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -179,6 +182,10 @@ public class PlaneScript : MonoBehaviour
 
             turnInput = Mathf.Lerp(-1f, 1f, rollNorm);
         }
+
+        // Links/rechts geblokkeerd (level 1)
+        if (HorizontalLocked)
+            turnInput = 0f;
 
         float targetPitchAngle = -verticalInput * maxPitchAngle;
         float targetBankAngle = -turnInput * maxBankAngle;
