@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,6 +17,8 @@ public class RingManager : MonoBehaviour
     [SerializeField] private GameObject winPanel;
     [SerializeField] private TMP_Text winText;
     [SerializeField] private string winMessage = "You won!";
+    [SerializeField] private string missedRingMessage = "You missed a ring! Restarting level...";
+    [SerializeField, Min(0f)] private float restartDelay = 2f;
 
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;
@@ -26,10 +29,12 @@ public class RingManager : MonoBehaviour
 
     public int TotalRings { get; private set; }
     public int RingsHit { get; private set; }
+    public bool AllRingsHit => TotalRings > 0 && RingsHit >= TotalRings;
     public bool HasWon { get; private set; }
     public bool HasLanded { get; private set; }
 
     private bool allRingsEventRaised;
+    private bool hasFailed;
 
     private void Awake()
     {
@@ -50,7 +55,7 @@ public class RingManager : MonoBehaviour
 
     public void RingHit(RingTrigger ring)
     {
-        if (HasWon) return;
+        if (HasWon || hasFailed) return;
 
         RingsHit++;
         RingWasHit?.Invoke(ring);
@@ -67,13 +72,60 @@ public class RingManager : MonoBehaviour
 
     public void PlaneLanded()
     {
+        if (hasFailed) return;
         HasLanded = true;
         TryCompleteLevel();
     }
 
+    public void MissedRing(RingTrigger ring)
+    {
+        if (HasWon || hasFailed) return;
+
+        hasFailed = true;
+        Debug.Log($"Missed ring '{ring.name}'. Restarting the level.", ring);
+
+        if (winText != null)
+            winText.text = missedRingMessage;
+        if (winPanel != null)
+            winPanel.SetActive(true);
+
+        StartCoroutine(RestartAfterMiss());
+    }
+
+    private IEnumerator RestartAfterMiss()
+    {
+        yield return new WaitForSecondsRealtime(restartDelay);
+
+        int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
+        if (currentBuildIndex < 0)
+        {
+            Debug.LogError("Cannot restart the level because the active scene is not in Build Settings.", this);
+            yield break;
+        }
+
+        SceneManager.LoadSceneAsync(currentBuildIndex);
+    }
+
+    private void OnGUI()
+    {
+        if (!hasFailed || (winPanel != null && winText != null)) return;
+
+        Rect messageRect = new Rect(Screen.width / 2f - 250f, Screen.height / 2f - 60f, 500f, 120f);
+        GUI.Box(messageRect, GUIContent.none);
+
+        GUIStyle style = new GUIStyle(GUI.skin.label)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontSize = 32,
+            fontStyle = FontStyle.Bold
+        };
+        style.normal.textColor = Color.white;
+        GUI.Label(messageRect, missedRingMessage, style);
+    }
+
     private void TryCompleteLevel()
     {
-        if (HasWon || !HasLanded || TotalRings == 0 || RingsHit < TotalRings)
+        if (HasWon || hasFailed || !HasLanded || TotalRings == 0 || RingsHit < TotalRings)
             return;
 
         CompleteLevel();

@@ -243,7 +243,6 @@ GameObject:
   - component: {fileID: 54242311}
   - component: {fileID: 54242310}
   - component: {fileID: 54242314}
-  - component: {fileID: 54242313}
   m_Layer: 0
   m_Name: PlaneModel
   m_TagString: Player
@@ -345,19 +344,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 54242308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af1df53eb96b5a64ebaba729493ac670, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VerticalOnlyLock
-  plane: {fileID: 54242314}
---- !u!114 &54242314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 54242308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c903219665147564ab39958e77fb9bcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlaneScript
@@ -374,7 +360,7 @@ MonoBehaviour:
   maxPitchAngle: 20
   pitchSpeed: 10
   oppositePitchLevelingMultiplier: 1.5
-  frontWing: {fileID: 1078340209}
+  frontWing: {fileID: 0}
   frontWingMaxDeflection: 8
   frontWingResponseSpeed: 45
   esp32Reader: {fileID: 2096457168}
@@ -392,6 +378,19 @@ MonoBehaviour:
   landingSinkSpeed: 3
   debugLogs: 1
   debugInterval: 0.5
+--- !u!114 &54242314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54242308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af1df53eb96b5a64ebaba729493ac670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VerticalOnlyLock
+  plane: {fileID: 54242313}
 --- !u!1001 &87658937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2021,11 +2020,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 14ba38315928ffd4a99d50b5028b7efa, type: 3}
   m_PrefabInstance: {fileID: 1078340207}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1078340209 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7942816438788599155, guid: 14ba38315928ffd4a99d50b5028b7efa, type: 3}
-  m_PrefabInstance: {fileID: 1078340207}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1119840520
 GameObject:
   m_ObjectHideFlags: 0
@@ -2170,6 +2164,8 @@ MonoBehaviour:
   winPanel: {fileID: 0}
   winText: {fileID: 0}
   winMessage: You won!
+  missedRingMessage: You missed a ring! Restarting level...
+  restartDelay: 2
   winSound: {fileID: 0}
 --- !u!4 &1124540085
 Transform:
