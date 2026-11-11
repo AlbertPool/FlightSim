@@ -320,6 +320,7 @@ public class PlaneScript : MonoBehaviour
             currentVerticalSpeed = 0f;
             velocity = Vector3.zero;
             Debug.Log("[Plane] Geland en gestopt.", this);
+            RingManager.Instance?.PlaneLanded();
         }
 
         rb.linearVelocity = velocity;
