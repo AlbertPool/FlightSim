@@ -44,6 +44,16 @@ public class HeightMeter : MonoBehaviour
 
     void Update()
     {
+        RefreshHeight();
+
+        if (heightText != null)
+        {
+            heightText.text = $"{DisplayLabel}: {HeightInMeters:0} m";
+        }
+    }
+
+    public void RefreshHeight()
+    {
         // Measure from the bottom of the plane's collider, so 0 means "on the ground"
         Bounds bounds = planeCollider != null ? planeCollider.bounds : new Bounds(transform.position, Vector3.zero);
         Vector3 origin = new Vector3(bounds.center.x, bounds.center.y, bounds.center.z);
@@ -68,11 +78,6 @@ public class HeightMeter : MonoBehaviour
         if (!float.IsNegativeInfinity(groundY))
         {
             HeightInMeters = Mathf.Max(0f, bottomY - groundY);
-        }
-
-        if (heightText != null)
-        {
-            heightText.text = $"{DisplayLabel}: {HeightInMeters:0} m";
         }
     }
 
