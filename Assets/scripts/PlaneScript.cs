@@ -10,6 +10,7 @@ public class PlaneScript : MonoBehaviour
 
     [SerializeField] private float verticalSpeed = 20f;
     [SerializeField] private float maxVerticalSpeed = 40f;
+    [SerializeField] private float maxHeightMeters = 70f;
 
     [SerializeField] private float bankedClimbSideSpeed = 20f;
     [SerializeField] private float turnSpeed = 40f;
@@ -63,6 +64,7 @@ public class PlaneScript : MonoBehaviour
 
     private Quaternion frontWingRestRotation;
     private Rigidbody rb;
+    private HeightMeter heightMeter;
     private float currentYaw;
 
     private readonly RaycastHit[] groundHits = new RaycastHit[8];
@@ -82,6 +84,10 @@ public class PlaneScript : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        heightMeter = GetComponent<HeightMeter>();
+
+        if (heightMeter == null)
+            heightMeter = gameObject.AddComponent<HeightMeter>();
 
         currentYaw = transform.eulerAngles.y;
 
@@ -155,6 +161,8 @@ public class PlaneScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        heightMeter?.RefreshHeight();
+
         // Ground check
         if (engineStarted && IsNearGround())
         {
@@ -312,6 +320,13 @@ public class PlaneScript : MonoBehaviour
             transform.forward * currentForwardSpeed +
             Vector3.up * currentVerticalSpeed +
             bankDirection * (bankedClimbInput * bankedClimbSideSpeed);
+
+        if (heightMeter != null)
+        {
+            float remainingHeight = maxHeightMeters - heightMeter.HeightInMeters;
+            float maxUpwardSpeed = Mathf.Max(0f, remainingHeight / Time.fixedDeltaTime);
+            velocity.y = Mathf.Min(velocity.y, maxUpwardSpeed);
+        }
 
         // Landing
         if (isLanding && Mathf.Approximately(currentForwardSpeed, 0f))
