@@ -73,7 +73,8 @@ public class PlaneScript : MonoBehaviour
     private float dbgVertNorm;
     private float dbgRollNorm;
 
-    public bool CanLand => engineStarted && timeNearGround >= landingHoldTime;
+    private bool AllRingsHit => RingManager.Instance != null && RingManager.Instance.AllRingsHit;
+    public bool CanLand => engineStarted && AllRingsHit && timeNearGround >= landingHoldTime;
     public bool IsLanding => isLanding;
 
     // Wordt aangezet door VerticalOnlyLock (alleen in level 1)
@@ -156,7 +157,7 @@ public class PlaneScript : MonoBehaviour
     void FixedUpdate()
     {
         // Ground check
-        if (engineStarted && IsNearGround())
+        if (engineStarted && AllRingsHit && IsNearGround())
         {
             timeNearGround += Time.fixedDeltaTime;
         }

@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 /// <summary>
-/// Put this on every ring. It creates a trigger zone in the hole of the ring
-/// and tells the RingManager when the plane flies through it.
+/// Put this on every ring. It checks whether the plane crosses the active ring through its hole.
 /// </summary>
 public class RingTrigger : MonoBehaviour
 {
@@ -32,7 +31,6 @@ public class RingTrigger : MonoBehaviour
         public Color initialColor;
     }
 
-    private SphereCollider hitZone;
     private Renderer[] ringRenderers;
     private bool[] initialRendererStates;
     private Material[][] originalMaterials;
@@ -41,15 +39,13 @@ public class RingTrigger : MonoBehaviour
     private bool sequenceActive = true;
     private bool isFading;
     private float fadeElapsed;
+    private Transform playerTransform;
+    private Vector3 previousPlayerPosition;
+    private float previousPlaneDistance;
+    private bool hasPreviousPlaneDistance;
 
     private void Awake()
     {
-        // Create a dedicated trigger so the ring's own (mesh) collider stays untouched.
-        hitZone = gameObject.AddComponent<SphereCollider>();
-        hitZone.isTrigger = true;
-        hitZone.radius = hitRadius;
-        hitZone.center = hitOffset;
-
         ringRenderers = GetComponentsInChildren<Renderer>(true);
         initialRendererStates = new bool[ringRenderers.Length];
         for (var i = 0; i < ringRenderers.Length; i++)
@@ -58,16 +54,90 @@ public class RingTrigger : MonoBehaviour
 
     private void Start()
     {
+        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+        if (player != null)
+        {
+            playerTransform = player.transform;
+            ResetPlaneTracking();
+        }
+        else
+        {
+            Debug.LogError($"No player with tag '{playerTag}' found; ring misses cannot be detected.", this);
+        }
+
         if (RingManager.Instance != null)
             RingManager.Instance.RegisterRing(this);
         else
             Debug.LogWarning("No RingManager in the scene!", this);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void FixedUpdate()
     {
-        if (!sequenceActive || IsHit) return;
-        if (!other.transform.root.CompareTag(playerTag)) return;
+        if (!sequenceActive || IsHit || playerTransform == null) return;
+
+        Vector3 currentPlayerPosition = playerTransform.position;
+        float currentPlaneDistance = GetPlaneDistance(currentPlayerPosition);
+
+        if (!hasPreviousPlaneDistance)
+        {
+            previousPlayerPosition = currentPlayerPosition;
+            previousPlaneDistance = currentPlaneDistance;
+            hasPreviousPlaneDistance = true;
+            return;
+        }
+
+        bool crossedPlane = (previousPlaneDistance < 0f && currentPlaneDistance >= 0f)
+            || (previousPlaneDistance > 0f && currentPlaneDistance <= 0f);
+
+        if (crossedPlane)
+        {
+            float crossingFraction = previousPlaneDistance
+                / (previousPlaneDistance - currentPlaneDistance);
+            Vector3 crossingPosition = Vector3.Lerp(
+                previousPlayerPosition,
+                currentPlayerPosition,
+                crossingFraction
+            );
+            Vector3 crossingLocalPosition = transform.InverseTransformPoint(crossingPosition) - hitOffset;
+            Vector2 distanceFromCenter = new Vector2(crossingLocalPosition.x, crossingLocalPosition.y);
+
+            if (distanceFromCenter.magnitude <= hitRadius)
+                RegisterHit();
+            else
+                RingManager.Instance?.MissedRing(this);
+        }
+
+        previousPlayerPosition = currentPlayerPosition;
+        previousPlaneDistance = currentPlaneDistance;
+    }
+
+    public void SetSequenceActive(bool active)
+    {
+        sequenceActive = active;
+        ResetPlaneTracking();
+
+        if (!IsHit || !hideOnHit)
+            SetRenderersVisible(active);
+    }
+
+    private float GetPlaneDistance(Vector3 worldPosition)
+    {
+        Vector3 planeCenter = transform.TransformPoint(hitOffset);
+        return Vector3.Dot(worldPosition - planeCenter, transform.forward);
+    }
+
+    private void ResetPlaneTracking()
+    {
+        hasPreviousPlaneDistance = playerTransform != null;
+        if (!hasPreviousPlaneDistance) return;
+
+        previousPlayerPosition = playerTransform.position;
+        previousPlaneDistance = GetPlaneDistance(previousPlayerPosition);
+    }
+
+    private void RegisterHit()
+    {
+        if (IsHit) return;
 
         IsHit = true;
 
@@ -78,15 +148,6 @@ public class RingTrigger : MonoBehaviour
             BeginFadeOut();
 
         RingManager.Instance?.RingHit(this);
-    }
-
-    public void SetSequenceActive(bool active)
-    {
-        sequenceActive = active;
-        hitZone.enabled = active && !IsHit;
-
-        if (!IsHit || !hideOnHit)
-            SetRenderersVisible(active);
     }
 
     private void Update()
@@ -230,7 +291,7 @@ public class RingTrigger : MonoBehaviour
         }
     }
 
-    // Shows the hit zone in the Scene view so you can size it.
+    // Shows the pass-through radius in the Scene view so you can size it.
     private void OnDrawGizmos()
     {
         Gizmos.color = IsHit ? Color.green : Color.yellow;
