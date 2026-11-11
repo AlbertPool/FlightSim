@@ -26,6 +26,19 @@ MonoBehaviour:
     m_Localized: De vlucht
     m_Metadata:
       m_Items: []
+  - m_Id: 17357923905007616
+    m_Localized: Instructies
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358221948055552
+    m_Localized: Vlieg door alle ringen en land het vliegtuig daarna om het level
+      te halen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358768352620544
+    m_Localized: Level 1
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

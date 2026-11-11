@@ -26,6 +26,19 @@ MonoBehaviour:
     m_Localized: El vuelo
     m_Metadata:
       m_Items: []
+  - m_Id: 17357923905007616
+    m_Localized: Instrucciones
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358221948055552
+    m_Localized: "Vuela a trav\xE9s de todos los aros y luego aterriza el avi\xF3n
+      para completar el nivel."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358768352620544
+    m_Localized: Nivel 1
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

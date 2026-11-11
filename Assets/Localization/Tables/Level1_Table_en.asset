@@ -22,6 +22,27 @@ MonoBehaviour:
     m_Localized: Height
     m_Metadata:
       m_Items: []
+  - m_Id: 406725662699520
+    m_Localized: Start Button
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407270913830912
+    m_Localized: Press the start button to start the engine.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407586442932224
+    m_Localized: Handle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407785127112704
+    m_Localized: Pull the lever toward you to ascend, and release it gently to descend
+      again.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 408095308476416
+    m_Localized: Press the start button first to clear this message
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

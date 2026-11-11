@@ -22,6 +22,27 @@ MonoBehaviour:
     m_Localized: "H\xF6he"
     m_Metadata:
       m_Items: []
+  - m_Id: 406725662699520
+    m_Localized: Starttaste
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407270913830912
+    m_Localized: "Dr\xFCcken Sie die Starttaste, um den Motor zu starten."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407586442932224
+    m_Localized: Handhaben
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407785127112704
+    m_Localized: Ziehen Sie den Hebel zu sich heran, um aufzusteigen, und lassen
+      Sie ihn behutsam wieder los, um zu sinken.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 408095308476416
+    m_Localized: "Dr\xFCcken Sie zuerst die Starttaste, um diese Meldung auszublenden."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

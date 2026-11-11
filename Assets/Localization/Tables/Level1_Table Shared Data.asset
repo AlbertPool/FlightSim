@@ -19,6 +19,26 @@ MonoBehaviour:
     m_Key: Hoogte_Key
     m_Metadata:
       m_Items: []
+  - m_Id: 406725662699520
+    m_Key: StartKnopTitel_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407270913830912
+    m_Key: StartKnopUitleg_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407586442932224
+    m_Key: HendelTitel_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407785127112704
+    m_Key: HendelUitleg_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 408095308476416
+    m_Key: DrukStartKnop_Key
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -23,6 +23,18 @@ MonoBehaviour:
     m_Key: Titel_Key
     m_Metadata:
       m_Items: []
+  - m_Id: 17357923905007616
+    m_Key: InstructiesTitel_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358221948055552
+    m_Key: Instructies_Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17358768352620544
+    m_Key: Level1_Key
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

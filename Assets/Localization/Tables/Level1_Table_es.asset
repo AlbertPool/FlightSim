@@ -22,6 +22,27 @@ MonoBehaviour:
     m_Localized: Altura
     m_Metadata:
       m_Items: []
+  - m_Id: 406725662699520
+    m_Localized: "bot\xF3n de inicio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407270913830912
+    m_Localized: "Pulsa el bot\xF3n de arranque para poner en marcha el motor."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407586442932224
+    m_Localized: Manejar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 407785127112704
+    m_Localized: "Tira de la palanca hacia ti para ascender, y su\xE9ltala suavemente
+      para volver a descender."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 408095308476416
+    m_Localized: "Pulsa primero el bot\xF3n de inicio para borrar este mensaje."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
