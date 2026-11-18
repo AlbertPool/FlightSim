@@ -557,6 +557,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
   m_PrefabInstance: {fileID: 87658937}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &136140423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 136140424}
+  - component: {fileID: 136140425}
+  m_Layer: 0
+  m_Name: Heerenveen world
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &136140424
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136140423}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 174.71947, y: 27.72859, z: 72.87125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &136140425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136140423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431385c0770b66541927a1fc9fb6e593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeerenveenWorld
+  terrain: {fileID: 38892547}
+  baseMaterial: {fileID: 0}
+  seed: 1910
+  worldHalfSize: 4500
+  edgeBlendDistance: 200
+  groundTextureSize: 2048
+  chunkSize: 750
+  objectScale: 1
+  townOffset: {x: 150, y: 620}
+  townLength: 760
+  canalWidth: 18
+  extraFarms: 40
+  windmills: 14
+  treeClumps: 60
+  laneTreeSpacing: 14
+  forestTreeSpacing: 22
+  detailDistance: 800
+  farTreeDistance: 2800
+  castShadows: 1
+  previewInEditMode: 1
+  sailSpeed: 20
 --- !u!1 &193412165
 GameObject:
   m_ObjectHideFlags: 0
@@ -3624,3 +3689,4 @@ SceneRoots:
   - {fileID: 1398374635}
   - {fileID: 2096457167}
   - {fileID: 10959716}
+  - {fileID: 136140424}
