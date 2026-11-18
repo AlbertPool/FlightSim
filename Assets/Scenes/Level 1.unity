@@ -14,12 +14,12 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 0.5754717, g: 0.52643836, b: 0.4750356, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogStart: 400
+  m_LinearFogEnd: 2800
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 54242311}
   - component: {fileID: 54242310}
   - component: {fileID: 54242314}
+  - component: {fileID: 54242313}
   m_Layer: 0
   m_Name: PlaneModel
   m_TagString: Player
@@ -1696,6 +1697,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1eb4d62a564d9094993214172d7328c8, type: 3}
   m_PrefabInstance: {fileID: 728788414}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &767044957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 767044958}
+  - component: {fileID: 767044959}
+  m_Layer: 0
+  m_Name: Heerenveen World
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &767044958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767044957}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &767044959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767044957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431385c0770b66541927a1fc9fb6e593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeerenveenWorld
+  terrain: {fileID: 38892547}
+  baseMaterial: {fileID: 0}
+  seed: 1910
+  worldHalfSize: 4500
+  edgeBlendDistance: 200
+  groundTextureSize: 2048
+  chunkSize: 750
+  objectScale: 1
+  townOffset: {x: 150, y: 620}
+  townLength: 760
+  canalWidth: 18
+  extraFarms: 40
+  windmills: 14
+  treeClumps: 60
+  laneTreeSpacing: 14
+  forestTreeSpacing: 22
+  detailDistance: 800
+  farTreeDistance: 2800
+  castShadows: 1
+  previewInEditMode: 1
+  sailSpeed: 20
 --- !u!1 &793058207
 GameObject:
   m_ObjectHideFlags: 0
@@ -3360,3 +3426,4 @@ SceneRoots:
   - {fileID: 1582004259}
   - {fileID: 1398374635}
   - {fileID: 2096457167}
+  - {fileID: 767044958}
