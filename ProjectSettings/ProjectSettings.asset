@@ -912,7 +912,13 @@ PlayerSettings:
   XboxOneXTitleMemory: 8
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -935,11 +941,11 @@ PlayerSettings:
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 6ca968be-a185-4f83-873a-c0c70a076e21
+  cloudProjectId: 1c9d4d68-ec6f-4b61-80ae-9718c5f58af7
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: FlightSim
-  organizationId: albertpool1234567890
+  organizationId: sembam
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
