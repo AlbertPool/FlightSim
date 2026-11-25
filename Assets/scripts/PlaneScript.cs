@@ -33,9 +33,20 @@ public class PlaneScript : MonoBehaviour
     [SerializeField] private float sensorMinCm = 3f;
     [SerializeField] private float sensorMaxCm = 6f;
 
-    [Header("Roll sensor (sensor 2)")]
-    [SerializeField] private float rollSensorMinCm = 3f;
-    [SerializeField] private float rollSensorMaxCm = 6f;
+    [Header("Roll via 2 sensoren (sensor 2 = links, sensor 3 = rechts)")]
+    [Tooltip("Afstand (cm) van de LINKER sensor als die NIET ingedrukt is.")]
+    [SerializeField] private float rollLeftReleasedCm = 8f;
+    [Tooltip("Afstand (cm) van de LINKER sensor als die VOLLEDIG ingedrukt is.")]
+    [SerializeField] private float rollLeftPressedCm = 3f;
+    [Tooltip("Afstand (cm) van de RECHTER sensor als die NIET ingedrukt is.")]
+    [SerializeField] private float rollRightReleasedCm = 8f;
+    [Tooltip("Afstand (cm) van de RECHTER sensor als die VOLLEDIG ingedrukt is.")]
+    [SerializeField] private float rollRightPressedCm = 3f;
+    [Tooltip("Dode zone (0-1): verschil tussen links en rechts kleiner dan dit = geen roll.")]
+    [Range(0f, 0.5f)]
+    [SerializeField] private float rollDeadzone = 0.1f;
+    [Tooltip("Vink aan als links/rechts omgedraaid is.")]
+    [SerializeField] private bool invertRoll = false;
 
     [Tooltip("Kleine marge tegen sensorruis.")]
     [SerializeField] private float sensorMarginCm = 0.05f;
@@ -73,7 +84,8 @@ public class PlaneScript : MonoBehaviour
     private float nextDebugTime;
     private bool prevEspActive;
     private float dbgVertNorm;
-    private float dbgRollNorm;
+    private float dbgRollLeft;
+    private float dbgRollRight;
 
     private bool AllRingsHit => RingManager.Instance != null && RingManager.Instance.AllRingsHit;
     public bool CanLand => engineStarted && AllRingsHit && timeNearGround >= landingHoldTime;
@@ -219,17 +231,37 @@ public class PlaneScript : MonoBehaviour
             ? Input.GetAxisRaw("Horizontal")
             : 0f;
 
-        // ESP32 roll control (sensor 2)
-        // Draait de roll de verkeerde kant op? Wissel -1f en 1f hieronder om.
-        if (espActive)
+        // ESP32 roll control: sensor 2 = links, sensor 3 = rechts
+        // Rechts min links: beide evenveel ingedrukt = geen roll.
+        // Draait de roll de verkeerde kant op? Zet 'Invert Roll' aan.
+        if (espActive && esp32Reader.HasRoll)
         {
-            dbgRollNorm = Mathf.InverseLerp(
-                rollSensorMinCm + sensorMarginCm,
-                rollSensorMaxCm - sensorMarginCm,
-                esp32Reader.usbValue2
-            );
+            // 0 = losgelaten, 1 = volledig ingedrukt
+            dbgRollLeft = esp32Reader.HasRollLeft
+                ? Mathf.InverseLerp(rollLeftReleasedCm, rollLeftPressedCm, esp32Reader.usbValue2)
+                : 0f;
 
-            turnInput = Mathf.Lerp(-1f, 1f, dbgRollNorm);
+            dbgRollRight = esp32Reader.HasRollRight
+                ? Mathf.InverseLerp(rollRightReleasedCm, rollRightPressedCm, esp32Reader.usbValue3)
+                : 0f;
+
+            float rollInput = dbgRollRight - dbgRollLeft; // -1 .. 1
+
+            // Dode zone rond 0
+            if (Mathf.Abs(rollInput) < rollDeadzone)
+            {
+                rollInput = 0f;
+            }
+            else
+            {
+                rollInput = Mathf.Sign(rollInput)
+                    * Mathf.InverseLerp(rollDeadzone, 1f, Mathf.Abs(rollInput));
+            }
+
+            if (invertRoll)
+                rollInput = -rollInput;
+
+            turnInput = rollInput;
         }
 
         // Links/rechts geblokkeerd (level 1)
@@ -384,8 +416,10 @@ public class PlaneScript : MonoBehaviour
             msg += " | hoogte sensor=" + esp32Reader.usbValue.ToString("F2", CultureInfo.InvariantCulture)
                 + " cm -> norm=" + dbgVertNorm.ToString("F2", CultureInfo.InvariantCulture)
                 + " -> vertical=" + verticalInput.ToString("F2", CultureInfo.InvariantCulture)
-                + " | roll sensor=" + esp32Reader.usbValue2.ToString("F2", CultureInfo.InvariantCulture)
-                + " cm -> norm=" + dbgRollNorm.ToString("F2", CultureInfo.InvariantCulture)
+                + " | roll L=" + esp32Reader.usbValue2.ToString("F2", CultureInfo.InvariantCulture)
+                + " cm (" + dbgRollLeft.ToString("F2", CultureInfo.InvariantCulture) + ")"
+                + " R=" + esp32Reader.usbValue3.ToString("F2", CultureInfo.InvariantCulture)
+                + " cm (" + dbgRollRight.ToString("F2", CultureInfo.InvariantCulture) + ")"
                 + " -> turn=" + turnInput.ToString("F2", CultureInfo.InvariantCulture);
         }
         else

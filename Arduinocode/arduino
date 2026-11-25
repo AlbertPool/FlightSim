@@ -1,7 +1,9 @@
-// Sensor 1 (hoogte): Trig 33, Echo 32
-// Sensor 2 (roll):   Trig 25, Echo 26
-const int trigPins[2] = {33, 25};
-const int echoPins[2] = {32, 26};
+// Sensor 1 (hoogte):      Trig 33, Echo 32
+// Sensor 2 (roll links):  Trig 18, Echo 19
+// Sensor 3 (roll rechts): Trig 25, Echo 26
+const int SENSOR_COUNT = 3;
+const int trigPins[SENSOR_COUNT] = {33, 18, 25};
+const int echoPins[SENSOR_COUNT] = {32, 19, 26};
 
 float readDistance(int trig, int echo) {
   digitalWrite(trig, LOW);
@@ -17,7 +19,7 @@ float readDistance(int trig, int echo) {
 
 void setup() {
   Serial.begin(115200);
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < SENSOR_COUNT; i++) {
     pinMode(trigPins[i], OUTPUT);
     pinMode(echoPins[i], INPUT);
   }
@@ -31,12 +33,12 @@ void loop() {
     if (cmd == "HELLO") Serial.println("ESP32_CONTROLLER");
   }
 
-  float d[2];
-  for (int i = 0; i < 2; i++) {
+  float d[SENSOR_COUNT];
+  for (int i = 0; i < SENSOR_COUNT; i++) {
     d[i] = readDistance(trigPins[i], echoPins[i]);
     delay(20); // echo van vorige sensor laten uitdoven
   }
 
-  // Formaat: hoogte,roll
-  Serial.printf("%.1f,%.1f\n", d[0], d[1]);
+  // Formaat: hoogte,rollLinks,rollRechts
+  Serial.printf("%.1f,%.1f,%.1f\n", d[0], d[1], d[2]);
 }

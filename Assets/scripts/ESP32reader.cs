@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System;
 using System.IO.Ports;
@@ -12,9 +11,13 @@ public class ESP32reader : MonoBehaviour
     public float usbValue;
     public float targetValue;
 
-    [Header("Sensor 2 - Roll")]
+    [Header("Sensor 2 - Roll links")]
     public float usbValue2;
     public float targetValue2;
+
+    [Header("Sensor 3 - Roll rechts")]
+    public float usbValue3;
+    public float targetValue3;
 
     [Header("Instellingen")]
     public float smoothSpeed = 5f;
@@ -33,10 +36,13 @@ public class ESP32reader : MonoBehaviour
     private readonly object dataLock = new object();
 
     private float receivedHeight;
-    private float receivedRoll;
+    private float receivedRollLeft;
+    private float receivedRollRight;
 
     public bool HasHeight { get; private set; }
-    public bool HasRoll { get; private set; }
+    public bool HasRollLeft { get; private set; }
+    public bool HasRollRight { get; private set; }
+    public bool HasRoll => HasRollLeft || HasRollRight;
 
     public bool HasReceivedValue => HasHeight || HasRoll;
 
@@ -195,7 +201,7 @@ public class ESP32reader : MonoBehaviour
             {
                 string line = port.ReadLine().Trim();
 
-                if (ParseSensorData(line, out float height, out float roll))
+                if (ParseSensorData(line, out float height, out float rollL, out float rollR))
                 {
                     lock (dataLock)
                     {
@@ -206,11 +212,18 @@ public class ESP32reader : MonoBehaviour
                             HasHeight = true;
                         }
 
-                        // Sensor 2: Roll
-                        if (roll >= 0)
+                        // Sensor 2: Roll links
+                        if (rollL >= 0)
                         {
-                            receivedRoll = roll;
-                            HasRoll = true;
+                            receivedRollLeft = rollL;
+                            HasRollLeft = true;
+                        }
+
+                        // Sensor 3: Roll rechts
+                        if (rollR >= 0)
+                        {
+                            receivedRollRight = rollR;
+                            HasRollRight = true;
                         }
                     }
                 }
@@ -229,14 +242,16 @@ public class ESP32reader : MonoBehaviour
         }
     }
 
-    bool ParseSensorData(string line, out float height, out float roll)
+    // Formaat van de ESP32: hoogte,rollLinks,rollRechts
+    bool ParseSensorData(string line, out float height, out float rollL, out float rollR)
     {
         height = -1;
-        roll = -1;
+        rollL = -1;
+        rollR = -1;
 
         string[] parts = line.Split(',');
 
-        if (parts.Length < 2)
+        if (parts.Length < 3)
             return false;
 
         bool validHeight = float.TryParse(
@@ -246,14 +261,21 @@ public class ESP32reader : MonoBehaviour
             out height
         );
 
-        bool validRoll = float.TryParse(
+        bool validRollL = float.TryParse(
             parts[1].Trim(),
             NumberStyles.Float,
             CultureInfo.InvariantCulture,
-            out roll
+            out rollL
         );
 
-        return validHeight && validRoll;
+        bool validRollR = float.TryParse(
+            parts[2].Trim(),
+            NumberStyles.Float,
+            CultureInfo.InvariantCulture,
+            out rollR
+        );
+
+        return validHeight && validRollL && validRollR;
     }
 
     void Update()
@@ -263,14 +285,18 @@ public class ESP32reader : MonoBehaviour
             if (HasHeight)
                 targetValue = receivedHeight;
 
-            if (HasRoll)
-                targetValue2 = receivedRoll;
+            if (HasRollLeft)
+                targetValue2 = receivedRollLeft;
+
+            if (HasRollRight)
+                targetValue3 = receivedRollRight;
         }
 
         float t = 1f - Mathf.Exp(-smoothSpeed * Time.deltaTime);
 
         usbValue = Mathf.Lerp(usbValue, targetValue, t);
         usbValue2 = Mathf.Lerp(usbValue2, targetValue2, t);
+        usbValue3 = Mathf.Lerp(usbValue3, targetValue3, t);
     }
 
     void OnDestroy()
@@ -303,4 +329,3 @@ public class ESP32reader : MonoBehaviour
         }
     }
 }
-
