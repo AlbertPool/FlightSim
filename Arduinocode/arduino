@@ -2,8 +2,8 @@
 // Sensor 2 (roll links):  Trig 18, Echo 19
 // Sensor 3 (roll rechts): Trig 25, Echo 26
 const int SENSOR_COUNT = 3;
-const int trigPins[SENSOR_COUNT] = {33, 18, 25};
-const int echoPins[SENSOR_COUNT] = {32, 19, 26};
+const int trigPins[SENSOR_COUNT] = {33, 19, 25};
+const int echoPins[SENSOR_COUNT] = {32, 18, 26};
 
 float readDistance(int trig, int echo) {
   digitalWrite(trig, LOW);
