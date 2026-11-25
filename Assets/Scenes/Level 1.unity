@@ -624,7 +624,7 @@ MonoBehaviour:
   edgeBlendDistance: 200
   groundTextureSize: 2048
   chunkSize: 750
-  objectScale: 1
+  objectScale: 2
   townOffset: {x: 150, y: 620}
   townLength: 760
   canalWidth: 18
